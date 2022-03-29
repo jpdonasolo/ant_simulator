@@ -6,6 +6,10 @@
 #include "ant.h"
 #include "entity.h"
 
+/*
+A classe World é o contêiner de tudo o que acontece na simulação.
+*/
+
 class World{
 public:
     
@@ -13,6 +17,14 @@ public:
     ~World(){};
 
     void print();
+
+    /*
+    Fora da classe World, trabalhamos com duas coordenadas, x e 
+    y, por facilidade. Internamente, a classe converte essas duas
+    coordenadas para o índice representativo daquelas coordenadas
+    no vetor World::chart, que guarda todas as entidades presentes
+    no mapa
+    */
     int posToInt(int posx, int posy){
         return posx + width * posy;
     }
@@ -43,6 +55,11 @@ World::World(int width, int height)
     chart.resize(width * height);
     Entity * emptySpace =  new Entity();
 
+    /*
+    Todos os espaços vazios apontam para a mesma entidade 
+    Entity, que representa um espaço vazio, para salvar
+    memória.
+    */
     for (int i = 0; i < chart.size(); i++){
         chart[i] = emptySpace;
     }
