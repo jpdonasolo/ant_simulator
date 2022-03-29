@@ -5,8 +5,8 @@
 
 
 class Ant : public Entity {
-    public:
-        Ant() : Entity('F') {};
+public:
+    Ant() : Entity('F') {};
 
-        bool isEmpty() { return false; }
+    bool isEmpty() { return false; }
 };
