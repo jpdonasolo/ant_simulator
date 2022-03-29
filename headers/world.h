@@ -8,16 +8,16 @@
 
 class World{
 public:
-    World(int w, int h)
-    : width(w), height(h)
-    { chart.resize(width * height); };
+    
+    World(int width, int height) 
+    : width(width), height(height) {};
     ~World(){};
 
     void print();
     int posToInt(int posx, int posy){
         return posx + width * posy;
     } 
-
+ 
 private:
     std::vector<Entity *> chart;
     const int width, height;
@@ -32,5 +32,16 @@ void World::print()
         if ((pos + 1 ) % width == 0){
             std::cout << std::endl;
         };
+    }
+}
+
+World::World(int width, int height)
+    : width(width), height(height)
+{
+    chart.resize(width * height);
+    Entity * emptySpace =  new Entity();
+
+    for (int i = 0; i < chart.size(); i++){
+        chart[i] = emptySpace;
     }
 }
