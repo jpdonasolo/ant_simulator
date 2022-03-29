@@ -6,6 +6,9 @@
 #include "ant.h"
 #include "entity.h"
 
+using std::cout;
+using std::endl;
+
 /*
 A classe World é o contêiner de tudo o que acontece na simulação.
 */
@@ -32,7 +35,14 @@ public:
     void addAntToChart(Ant * ant, int posx, int posy);
 
 private:
+    // Mapa
     std::vector<Entity *> chart;
+    /*
+    Vetor que rastreia todas as formigas do mundo. Será usado
+    para paralelismo. Ponteiro de ponteiro pois vai apontar
+    para a posição da formiga no mapa.
+    */
+    std::vector<Ant **> ants;
     const int width, height;
 };
 
@@ -41,10 +51,10 @@ void World::print()
 {
     for (int pos = 0; pos < chart.size(); pos++){
         
-        std::cout << chart[pos]->getMarker();
+        cout << chart[pos]->getMarker();
         
         if ((pos + 1 ) % width == 0){
-            std::cout << std::endl;
+            cout << endl;
         };
     }
 }
