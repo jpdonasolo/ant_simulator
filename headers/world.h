@@ -9,19 +9,21 @@
 class World{
 public:
     
-    World(int width, int height) 
-    : width(width), height(height) {};
+    World(int width, int height);
     ~World(){};
 
     void print();
     int posToInt(int posx, int posy){
         return posx + width * posy;
-    } 
+    }
  
+    void addAntToChart(Ant * ant, int posx, int posy);
+
 private:
     std::vector<Entity *> chart;
     const int width, height;
 };
+
 
 void World::print()
 {
@@ -44,4 +46,10 @@ World::World(int width, int height)
     for (int i = 0; i < chart.size(); i++){
         chart[i] = emptySpace;
     }
+}
+
+void World::addAntToChart(Ant * ant, int posx, int posy)
+{    
+    const int indexInChart = posToInt(posx, posy);
+    chart[indexInChart] = ant;
 }

@@ -5,9 +5,9 @@ int main(int argc, char const *argv[])
 {
     
     World world (3, 3);
-    Ant ant;
+    Ant * ant = new Ant();
 
-    world.addObjectToMap<Ant>(ant, 0, 0);
+    world.addAntToChart(ant, 1, 2);
     
     world.print();
 
