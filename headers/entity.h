@@ -7,15 +7,8 @@ class Entity{
         Entity() : marker(' ') {};
         Entity(char m) : marker(m) {};
         
-        Entity operator=(const Entity & other){
-            std::cout << "operator= Entity\n";
-            Entity obj(other.getMarker());
-            return obj;
-        }
-
-        char getMarker() const {
-            return marker;
-        }
+        char getMarker() const { return marker; }
+        virtual bool isEmpty() const { return true; };
 
     protected:
         const char marker;
