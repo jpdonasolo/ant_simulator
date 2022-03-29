@@ -1,13 +1,13 @@
 #pragma once
 
 #include <iostream>
-#include "object.h"
+#include "entity.h"
 
 
-class Ant : public Object {
+class Ant : public Entity {
     public:
         Ant()
-        : Object('F') 
+        : Entity('F') 
         {std::cout << "c\n";};
 
         Ant operator=(const Ant & other){

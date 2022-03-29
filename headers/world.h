@@ -4,7 +4,7 @@
 #include <vector>
 
 #include "ant.h"
-#include "object.h"
+#include "entity.h"
 
 class World{
     public:
@@ -27,7 +27,7 @@ class World{
         } 
 
     private:
-        std::vector<Object> map;
+        std::vector<Entity> map;
         const int width, height;
 };
 
