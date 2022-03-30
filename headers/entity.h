@@ -14,12 +14,18 @@ explicar depois.
 */
 class Entity{
 public:
-    Entity() : marker(' ') {};
-    Entity(char m) : marker(m) {};
+    Entity(char m) : m_marker(m) {};
     
-    char getMarker() const { return marker; }
-    virtual bool isEmpty() const { return true; };
+    char getMarker() const { return m_marker; }
+    virtual bool isEmpty() const {};
 
 protected:
-    const char marker;
+    const char m_marker;
+};
+
+class EmptySpace : public Entity {
+public:
+    EmptySpace() : Entity(' '){};
+
+    bool isEmpty(){ return true; };
 };
