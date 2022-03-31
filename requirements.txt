@@ -95,8 +95,8 @@ Class Formiga:
 MÉTODOS:
 	nextAction
 	move
-	enterFoodSource
-	takeFood / takeGuard
+	tryEnterFoodSource
+	tryTakeFood
 	leaveFood
 	leavePherormone
 ATRIBUTOS:
@@ -125,24 +125,11 @@ ATRIBUTOS:
 Class FonteDeComida:
 ATRIBUTOS:
 	foodLeft
+	guests
+	numBastons
 MÉTODOS:
+	provide
 	
-	
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+struct Formigueiro:
+ATRIBUTOS:
+	storedFood
