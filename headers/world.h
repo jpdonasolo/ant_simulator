@@ -2,12 +2,19 @@
 
 #include <iostream>
 #include <vector>
+#include <fstream>
+
+// https://www.codeproject.com/articles/1102603/accessing-json-data-with-cplusplus
+#include <jsoncpp/json/value.h>
+#include <jsoncpp/json/reader.h>
 
 #include "ant.h"
 #include "anthill.h"
 #include "foodSource.h"
 #include "pherormone.h"
 #include "tile.h"
+
+#define CONFIGURATION_PATH "config.json"
 
 
 using std::cout;
@@ -24,6 +31,7 @@ public:
     ~World(){};
 
     void print();
+    void setup();
 
     /*
     Fora da classe World, trabalhamos com duas coordenadas, x e 
@@ -53,7 +61,39 @@ private:
     */
 
     const int m_chartWidth, m_chartHeight;
+
+    /*
+    Leitura dos dados necessários à execução do programa
+    */
+    Json::Value readJson();
 };
+
+
+void World::setup()
+{
+    Json::Value config = readJson();
+    std::string teste = config["teste"].asString();
+    cout << teste << endl;
+    
+}
+
+Json::Value World::readJson()
+{
+    std::ifstream configFile (CONFIGURATION_PATH);
+    
+    Json::Reader reader;
+    Json::Value configData;
+
+    if (!reader.parse(configFile, configData, false))
+    {
+        cout << "O arquivo não pode ser lido. Verifique o caminho especificado\n";
+    }
+
+    return configData;
+    
+}
+
+
 
 
 World::World(int width, int height)
