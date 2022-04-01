@@ -4,7 +4,11 @@
 #include <vector>
 
 #include "ant.h"
-#include "entity.h"
+#include "anthill.h"
+#include "foodSource.h"
+#include "pherormone.h"
+#include "tile.h"
+
 
 using std::cout;
 using std::endl;
@@ -25,58 +29,35 @@ public:
     Fora da classe World, trabalhamos com duas coordenadas, x e 
     y, por facilidade. Internamente, a classe converte essas duas
     coordenadas para o índice representativo daquelas coordenadas
-    no vetor World::m_chart, que guarda todas as entidades presentes
-    no mapa
+    no vetor World::m_chart, que guarda o mapa
     */
     int posToInt(int posx, int posy){
-        return posx + m_width * posy;
+        return posx + m_chartWidth * posy;
     }
+
  
-    void addAntToChart(Ant * ant, int posx, int posy);
 
 private:
-    // Mapa
-    std::vector<Entity *> m_chart;
+
     /*
-    Vetor que rastreia todas as formigas do mundo. Será usado
-    para paralelismo. Ponteiro de ponteiro pois vai apontar
-    para a posição da formiga no mapa.
+    Entidades da simulação
     */
-    std::vector<Ant **> m_ants;
-    const int m_width, m_height;
+    std::vector<Tile> m_chart;
+    std::vector<Ant> m_ants;
+    std::vector<Anthill> m_anthills;
+    std::vector<FoodSource> m_foodSources;
+    std::vector<Pherormone> m_pherormones;
+
+    /*
+    Metadados da simulação - LIDOS DO JSON
+    */
+
+    const int m_chartWidth, m_chartHeight;
 };
 
 
-void World::print()
-{
-    for (int pos = 0; pos < m_chart.size(); pos++){
-        
-        cout << m_chart[pos]->getMarker();
-        
-        if ((pos + 1 ) % m_width == 0){
-            cout << endl;
-        };
-    }
-}
-
 World::World(int width, int height)
-    : m_width(width), m_height(height)
+    : m_chartWidth(width), m_chartHeight(height)
 {
-    m_chart.resize(m_width * m_height);
-    Entity * emptySpace =  new EmptySpace();
-
-    /*
-    Todos os espaços vazios apontam para a mesma entidade 
-    Entity, que representa um espaço vazio, para salvar
-    memória.
-    */
-    for (int i = 0; i < m_chart.size(); i++){
-        m_chart[i] = emptySpace;
-    }
-}
-
-void World::addAntToChart(Ant * ant, int posx, int posy)
-{    
-    const int indexInChart = posToInt(posx, posy);
-    m_chart[indexInChart] = ant;
+    m_chart.resize(m_chartWidth * m_chartHeight);
 }
