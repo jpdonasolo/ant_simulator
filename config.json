@@ -1,7 +1,29 @@
 {
-    "Ants": [
+    "height": 5,
+    "width": 5,
+    "ants": [
         1,
         3,
         4
+    ],
+    "foodSources": [
+        {
+            "x": 0,
+            "y": 2,
+            "refillTime": 50,
+            "refillQuantity": 5
+        },
+        {
+            "x": 1,
+            "y": 1,
+            "refillTime": 100,
+            "refillQuantity": 8
+        },
+        {
+            "x": 3,
+            "y": 4,
+            "refillTime": 8,
+            "refillQuantity": 3
+        }
     ]
 }

@@ -14,6 +14,8 @@
 #include "pheromone.h"
 #include "tile.h"
 
+#include "funcs.h"
+
 
 #define CONFIGURATION_PATH "config.json"
 
@@ -107,12 +109,18 @@ void World::resizeChart()
 
 void World::addFoodSources()
 {
-    Json::Value antsInfo = config["Ants"];
+    Json::Value foodSourcesInfo = config["foodSources"];
 
-    const int numberOfAnts = antsInfo.size();
-
-    for (int idx = 0; idx < numberOfAnts; idx++)
+    for (Json::Value foodSourceInfo : foodSourcesInfo)
     {
-        std::cout << "Formiga " << idx << std::endl;
+        FoodSource * fd = foodSourceMaker(foodSourceInfo);
+        m_foodSources.push_back(*(fd));
+        
     }
+
+    for (FoodSource foodSourceInfo : m_foodSources)
+    {
+        std::cout << foodSourceInfo.gety() << std::endl;
+    }
+
 }
