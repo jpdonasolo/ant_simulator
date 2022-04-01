@@ -17,17 +17,13 @@
 
 #define CONFIGURATION_PATH "config.json"
 
-
-using std::cout;
-using std::endl;
-
 /*
 A classe World é o contêiner de tudo o que acontece na simulação.
 */
 class World{
 public:
     
-    World(int width, int height);
+    World(){};
     ~World(){};
 
     void print();
@@ -59,20 +55,29 @@ private:
     /*
     Metadados da simulação - LIDOS DO JSON
     */
-    const int m_chartWidth, m_chartHeight;
+    int m_chartWidth, m_chartHeight;
+    Json::Value config;
 
     /*
     Leitura dos dados necessários à execução do programa
     */
     Json::Value readJson();
+
+    /*
+    Funções para inicialização do mapa
+    */
+   void resizeChart();
+   void addFoodSources();
 };
 
 
 void World::setup()
 {
-    Json::Value config = readJson();
-    std::string teste = config["teste"].asString();
-    cout << teste << endl;
+    config = readJson();
+
+    resizeChart();
+    addFoodSources();
+
     
 }
 
@@ -85,18 +90,29 @@ Json::Value World::readJson()
 
     if (!reader.parse(configFile, configData, false))
     {
-        cout << "O arquivo não pode ser lido. Verifique o caminho especificado\n";
+        std::cout << "O arquivo não pode ser lido. Verifique o caminho especificado\n";
     }
 
     return configData;
     
 }
 
-
-
-
-World::World(int width, int height)
-    : m_chartWidth(width), m_chartHeight(height)
+void World::resizeChart()
 {
-    m_chart.resize(m_chartWidth * m_chartHeight);
+    const int height = config["height"].asInt();
+    const int width = config["width"].asInt();
+
+    m_chart.resize(height * width);
+}
+
+void World::addFoodSources()
+{
+    Json::Value antsInfo = config["Ants"];
+
+    const int numberOfAnts = antsInfo.size();
+
+    for (int idx = 0; idx < numberOfAnts; idx++)
+    {
+        std::cout << "Formiga " << idx << std::endl;
+    }
 }
