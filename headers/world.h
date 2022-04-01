@@ -11,8 +11,9 @@
 #include "ant.h"
 #include "anthill.h"
 #include "foodSource.h"
-#include "pherormone.h"
+#include "pheromone.h"
 #include "tile.h"
+
 
 #define CONFIGURATION_PATH "config.json"
 
@@ -23,7 +24,6 @@ using std::endl;
 /*
 A classe World é o contêiner de tudo o que acontece na simulação.
 */
-
 class World{
 public:
     
@@ -54,12 +54,11 @@ private:
     std::vector<Ant> m_ants;
     std::vector<Anthill> m_anthills;
     std::vector<FoodSource> m_foodSources;
-    std::vector<Pherormone> m_pherormones;
+    std::vector<Pheromone> m_pheromones;
 
     /*
     Metadados da simulação - LIDOS DO JSON
     */
-
     const int m_chartWidth, m_chartHeight;
 
     /*
