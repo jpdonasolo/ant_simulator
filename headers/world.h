@@ -55,8 +55,10 @@ private:
     /*
     Metadados da simulação - LIDOS DO JSON
     */
-    int m_height, m_width;
     Json::Value config;
+
+    int getHeight() { return config["height"].asInt(); }
+    int getWidth() { return config["width"].asInt(); }
 
     /*
     Leitura dos dados necessários à execução do programa
@@ -99,10 +101,10 @@ Json::Value World::readJson()
 
 void World::resizeChart()
 {
-    m_height = config["height"].asInt();
-    m_width = config["width"].asInt();
+    const int height = getHeight();
+    const int width = getWidth();
 
-    m_chart.resize(m_height * m_width);
+    m_chart.resize(height * width);
 }
 
 void World::addAntsAndHills()
@@ -137,16 +139,19 @@ void World::addFoodSources()
 }
 
 int World::posToInt(int posx, int posy){
-    return posx + m_width * posy;
+    return posx + getWidth() * posy;
 }
 
 void World::print()
 {
     std::vector<std::string> grid;
 
-    for(int i = 0; i < m_width+2; ++i){
-        for(int j = 0; j < m_height+2; ++j){
-            if(i==0 || i==m_width+1 || j==0 || j==m_height+1){
+    const int chartHeight = getHeight();
+    const int chartWidth = getWidth();
+
+    for(int i = 0; i < getWidth()+2; ++i){
+        for(int j = 0; j < chartWidth+2; ++j){
+            if(i==0 || i==chartWidth+1 || j==0 || j==chartHeight+1){
                 grid.push_back("X");
             }else{
                 grid.push_back(" ");
@@ -162,23 +167,23 @@ void World::print()
     */
     for (Ant antInfo : m_ants)
     { 
-        grid[(antInfo.getx() + 1) + (m_width+2)*(antInfo.gety()+1)] = "A";
+        grid[(antInfo.getx() + 1) + (chartWidth+2)*(antInfo.gety()+1)] = "A";
     } 
 
     for (Anthill anthillInfo : m_anthills)
     { 
-        grid[(anthillInfo.getx() + 1) + (m_width+2)*(anthillInfo.gety()+1)] = "H";
+        grid[(anthillInfo.getx() + 1) + (chartWidth+2)*(anthillInfo.gety()+1)] = "H";
     } 
 
     for (FoodSource foodSourceInfo : m_foodSources)
     { 
-        grid[(foodSourceInfo.getx() + 1) + (m_width+2)*(foodSourceInfo.gety()+1)] = "F";
+        grid[(foodSourceInfo.getx() + 1) + (chartWidth+2)*(foodSourceInfo.gety()+1)] = "F";
     }
 
-    for(int i = 0; i < m_width+2; ++i){
-        for(int j = 0; j < m_height+2; ++j){
-            std::cout << grid[i*(m_height+2) + j];
-            if(j==m_height+1){
+    for(int i = 0; i < chartWidth+2; ++i){
+        for(int j = 0; j < chartWidth+2; ++j){
+            std::cout << grid[i*(chartHeight+2) + j];
+            if(j==chartHeight+1){
                 std::cout << std::endl;
             }
         }
