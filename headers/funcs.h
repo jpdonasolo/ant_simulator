@@ -3,6 +3,8 @@
 #include <jsoncpp/json/value.h>
 
 #include "foodSource.h"
+#include "ant.h"
+#include "anthill.h"
 
 FoodSource * foodSourceMaker(const Json::Value attributes)
 {
@@ -18,3 +20,13 @@ FoodSource * foodSourceMaker(const Json::Value attributes)
 
 }
 
+Anthill * anthillMaker(const Json::Value attributes, int anthillIndex)
+{
+    const int x = attributes["x"].asInt();
+    const int y = attributes["y"].asInt();
+    const int nAnts = attributes["nAnts"].asInt();
+
+    Anthill * ah = new Anthill(x, y, anthillIndex, nAnts);
+
+    return ah;
+}

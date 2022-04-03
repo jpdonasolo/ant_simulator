@@ -17,7 +17,7 @@
 #include "funcs.h"
 
 
-#define CONFIGURATION_PATH "config.json"
+#define CONFIGURATION_PATH "../config.json"
 
 /*
 A classe World é o contêiner de tudo o que acontece na simulação.
@@ -37,9 +37,7 @@ public:
     coordenadas para o índice representativo daquelas coordenadas
     no vetor World::m_chart, que guarda o mapa
     */
-    int posToInt(int posx, int posy){
-        return posx + m_chartWidth * posy;
-    }
+    int posToInt(int posx, int posy);
 
  
 
@@ -57,7 +55,7 @@ private:
     /*
     Metadados da simulação - LIDOS DO JSON
     */
-    int m_chartWidth, m_chartHeight;
+    int m_height, m_width;
     Json::Value config;
 
     /*
@@ -68,8 +66,9 @@ private:
     /*
     Funções para inicialização do mapa
     */
-   void resizeChart();
-   void addFoodSources();
+    void resizeChart();
+    void addAntsAndHills();
+    void addFoodSources();
 };
 
 
@@ -78,9 +77,8 @@ void World::setup()
     config = readJson();
 
     resizeChart();
+    addAntsAndHills();
     addFoodSources();
-
-    
 }
 
 Json::Value World::readJson()
@@ -101,10 +99,29 @@ Json::Value World::readJson()
 
 void World::resizeChart()
 {
-    const int height = config["height"].asInt();
-    const int width = config["width"].asInt();
+    m_height = config["height"].asInt();
+    m_width = config["width"].asInt();
 
-    m_chart.resize(height * width);
+    m_chart.resize(m_height * m_width);
+}
+
+void World::addAntsAndHills()
+{
+    Json::Value anthillsInfo = config["anthills"];
+
+    int anthillIndex = 0;
+    for (Json::Value anthillInfo : anthillsInfo)
+    {
+        Anthill * ah = anthillMaker(anthillInfo, anthillIndex);
+        m_anthills.push_back(*(ah));
+
+        for(int i = 0; i<(*ah).getpopu(); i++){
+            Ant * ant = new Ant((*ah).getx(), (*ah).gety(), anthillIndex);
+            m_ants.push_back(*(ant));
+        }
+
+        ++anthillIndex;
+    }
 }
 
 void World::addFoodSources()
@@ -117,10 +134,53 @@ void World::addFoodSources()
         m_foodSources.push_back(*(fd));
         
     }
+}
 
-    for (FoodSource foodSourceInfo : m_foodSources)
-    {
-        std::cout << foodSourceInfo.gety() << std::endl;
+int World::posToInt(int posx, int posy){
+    return posx + m_width * posy;
+}
+
+void World::print()
+{
+    std::vector<std::string> grid;
+
+    for(int i = 0; i < m_width+2; ++i){
+        for(int j = 0; j < m_height+2; ++j){
+            if(i==0 || i==m_width+1 || j==0 || j==m_height+1){
+                grid.push_back("X");
+            }else{
+                grid.push_back(" ");
+            }
+        }
     }
 
+    /*
+    A = formigas
+    H = formigueiro
+    F = fonte de comida
+    X = fora do limite do mapa
+    */
+    for (Ant antInfo : m_ants)
+    { 
+        grid[(antInfo.getx() + 1) + (m_width+2)*(antInfo.gety()+1)] = "A";
+    } 
+
+    for (Anthill anthillInfo : m_anthills)
+    { 
+        grid[(anthillInfo.getx() + 1) + (m_width+2)*(anthillInfo.gety()+1)] = "H";
+    } 
+
+    for (FoodSource foodSourceInfo : m_foodSources)
+    { 
+        grid[(foodSourceInfo.getx() + 1) + (m_width+2)*(foodSourceInfo.gety()+1)] = "F";
+    }
+
+    for(int i = 0; i < m_width+2; ++i){
+        for(int j = 0; j < m_height+2; ++j){
+            std::cout << grid[i*(m_height+2) + j];
+            if(j==m_height+1){
+                std::cout << std::endl;
+            }
+        }
+    }
 }
