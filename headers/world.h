@@ -146,12 +146,16 @@ void World::print()
 {
     std::vector<std::string> grid;
 
-    const int chartHeight = getHeight();
-    const int chartWidth = getWidth();
+    const int height = getHeight();
+    const int width = getWidth();
 
-    for(int i = 0; i < getWidth()+2; ++i){
-        for(int j = 0; j < chartWidth+2; ++j){
-            if(i==0 || i==chartWidth+1 || j==0 || j==chartHeight+1){
+    const int heightPlusWalls = height + 2;
+    const int widthPlusWalls = width + 2;
+
+
+    for(int i = 0; i < widthPlusWalls; ++i){
+        for(int j = 0; j < widthPlusWalls; ++j){
+            if(i==0 || i==width+1 || j==0 || j==height+1){
                 grid.push_back("X");
             }else{
                 grid.push_back(" ");
@@ -167,23 +171,23 @@ void World::print()
     */
     for (Ant antInfo : m_ants)
     { 
-        grid[(antInfo.getx() + 1) + (chartWidth+2)*(antInfo.gety()+1)] = "A";
+        grid[(antInfo.getx() + 1) + (widthPlusWalls)*(antInfo.gety()+1)] = "A";
     } 
 
     for (Anthill anthillInfo : m_anthills)
     { 
-        grid[(anthillInfo.getx() + 1) + (chartWidth+2)*(anthillInfo.gety()+1)] = "H";
+        grid[(anthillInfo.getx() + 1) + (widthPlusWalls)*(anthillInfo.gety()+1)] = "H";
     } 
 
     for (FoodSource foodSourceInfo : m_foodSources)
     { 
-        grid[(foodSourceInfo.getx() + 1) + (chartWidth+2)*(foodSourceInfo.gety()+1)] = "F";
+        grid[(foodSourceInfo.getx() + 1) + (widthPlusWalls)*(foodSourceInfo.gety()+1)] = "F";
     }
 
-    for(int i = 0; i < chartWidth+2; ++i){
-        for(int j = 0; j < chartWidth+2; ++j){
-            std::cout << grid[i*(chartHeight+2) + j];
-            if(j==chartHeight+1){
+    for(int i = 0; i < widthPlusWalls; ++i){
+        for(int j = 0; j < widthPlusWalls; ++j){
+            std::cout << grid[i*(heightPlusWalls) + j];
+            if(j==height+1){
                 std::cout << std::endl;
             }
         }
