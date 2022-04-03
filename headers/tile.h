@@ -2,14 +2,13 @@
 
 #include <vector>
 
-struct Tile {
-public:
-    Tile()
-    // : isFoodSource(isFoodSource)
-    // , isAnthill(isAnthill)
-    {};
+#include "entity.h"
 
+
+struct Tile : public Entity {
+public:
+    Tile(int x, int y)
+    : Entity(x, y)
+    {};
 private:
-    // const bool isFoodSource;
-    // const bool isAnthill;
 };

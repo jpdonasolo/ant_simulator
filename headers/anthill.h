@@ -1,22 +1,20 @@
 #pragma once
 
-class Anthill {
+#include "entity.h"
+
+
+class Anthill : public Entity {
 public:
     Anthill(int x, int y, int anthillIndex, int nAnts)
-        : posx(x)
-        , posy(y)
+        : Entity(x, y)
         , ind(anthillIndex)
         , popu(nAnts)
         {}
 
-    int getx() const { return posx; };
-    int gety() const { return posy; };
-    int getindex() const { return ind; };
-    int getpopu() const { return popu; };
+    int getIndex() const { return ind; };
+    int getPopu() const { return popu; };
 
 private:
-    const int posx;
-    const int posy;
     const int ind;
     int popu;
 };

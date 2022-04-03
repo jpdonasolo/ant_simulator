@@ -115,7 +115,7 @@ void World::addAntsAndHills()
         Anthill * ah = anthillMaker(anthillInfo, anthillIndex);
         m_anthills.push_back(*(ah));
 
-        for(int i = 0; i<(*ah).getpopu(); i++){
+        for(int i = 0; i<(*ah).getPopu(); i++){
             Ant * ant = new Ant((*ah).getx(), (*ah).gety(), anthillIndex);
             m_ants.push_back(*(ant));
         }
