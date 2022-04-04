@@ -15,16 +15,13 @@
 #include "utils.h"
 
 
-#define CONFIGURATION_PATH "config.json"
-
-
 void World::setup()
 {
     config = readJson();
 
     setupGrid();
 
-    resizeChart();
+    setupChart();
     addAntsAndHills();
     addFoods();
 }
@@ -45,12 +42,21 @@ Json::Value World::readJson()
     
 }
 
-void World::resizeChart()
+void World::setupChart()
 {
     const int height = getHeight();
     const int width = getWidth();
 
-    m_chart.resize(height * width);
+    const int nAnts = config["anthills"].size();
+    
+    for(int i=0; i<height; i++)
+    {
+        for(int j=0; j<width; j++)
+        {
+            Tile * tilePointer = tileFactory(nAnts);
+            m_chart.push_back(*(tilePointer));
+        }
+    }
 }
 
 void World::setupGrid()
@@ -138,4 +144,9 @@ void World::addEntitiesToGrid(std::vector<entityType> entities)
         Entity * entity = &(entities[idx]);
         m_grid[(entity->getx() + 1) + (getWidth() + 2)*(entity->gety()+1)] = entity->getMarker();
     }
+}
+
+void World::leavePhero(Ant * ant){
+    Pheromone * phero = new Pheromone((*ant).getx(), (*ant).gety(), (*ant).getindex(), config["pheroLifetime"].asInt());
+    m_pheromones.push_back(*(phero));
 }

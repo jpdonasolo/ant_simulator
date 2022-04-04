@@ -4,6 +4,7 @@
 #include "ant.h"
 #include "anthill.h"
 #include "utils.h"
+#include "tile.h"
 
 Food * foodFactory(const Json::Value attributes)
 {
@@ -28,4 +29,10 @@ Anthill * anthillFactory(const Json::Value attributes, int anthillIndex)
     Anthill * ah = new Anthill(x, y, anthillIndex, nAnts);
 
     return ah;
+}
+
+Tile * tileFactory(int nAnts)
+{
+    Tile * t = new Tile(nAnts);
+    return t;
 }

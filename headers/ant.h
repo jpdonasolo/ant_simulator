@@ -14,6 +14,9 @@ public:
     
     char getMarker() { return 'A'; }
 
+    void nextTick(){
+        //world::leave_phero(this);
+    }
 private:
     const int indAnthill;
 };

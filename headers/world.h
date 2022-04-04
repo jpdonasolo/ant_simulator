@@ -39,7 +39,10 @@ public:
     */
     int posToInt(int posx, int posy);
 
- 
+    /*
+    Funções úteis às formiguinhaz
+    */
+    void leavePhero(Ant * ant); 
 
 private:
 
@@ -73,16 +76,17 @@ private:
     /*
     Funções para inicialização do mapa
     */
-    void resizeChart();
+    void setupChart();
     void addAntsAndHills();
     void addFoods();
+
 
     /*
     Funções para exibição do mapa
     */
-   void setupGrid();
+    void setupGrid();
 
-   template <typename entityType>
-   void addEntitiesToGrid(std::vector<entityType> entities);
+    template <typename entityType>
+    void addEntitiesToGrid(std::vector<entityType> entities);
 
 };

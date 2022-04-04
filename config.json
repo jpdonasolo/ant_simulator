@@ -1,6 +1,7 @@
 {
     "height": 5,
     "width": 5,
+    "pheroLifetime":10,
     "anthills": [
         {
             "x": 0,
