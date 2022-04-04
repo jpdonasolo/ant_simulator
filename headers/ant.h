@@ -10,7 +10,9 @@ public:
         , indAnthill(anthillIndex)
         {}
 
-    int getindex() const { return indAnthill; };
+    int getindex() const { return indAnthill; }
+    
+    char getMarker() { return 'A'; }
 
     void nextTick(){
         //world::leave_phero(this);

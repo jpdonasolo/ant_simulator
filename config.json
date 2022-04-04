@@ -14,7 +14,7 @@
             "nAnts": 1
         }
     ],
-    "foodSources": [
+    "foods": [
         {
             "x": 0,
             "y": 2,

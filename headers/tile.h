@@ -2,16 +2,11 @@
 
 #include <vector>
 
-#include "entity.h"
 
-
-class Tile : public Entity {
+class Tile {
 public:
-    Tile(int x, int y, int sizePheroList)
-    : Entity(x, y)
-    {
-        pheroList.resize(sizePheroList, 0);
-    };
+    Tile(int sizePheroList) 
+        { pheroList.resize(sizePheroList, 0); };
 
     std::vector<int> pheroList; 
 	bool isFood = false;

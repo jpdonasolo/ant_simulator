@@ -9,6 +9,9 @@ public:
 
     int getx() { return posx; }
     int gety() { return posy; }
+
+    virtual char getMarker() = 0;
+
 private:
     const int posx;
     const int posy;

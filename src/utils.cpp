@@ -1,12 +1,12 @@
-#pragma once
-
 #include <jsoncpp/json/value.h>
 
-#include "foodSource.h"
+#include "food.h"
 #include "ant.h"
 #include "anthill.h"
+#include "utils.h"
+#include "tile.h"
 
-FoodSource * foodSourceMaker(const Json::Value attributes)
+Food * foodFactory(const Json::Value attributes)
 {
     const int x = attributes["x"].asInt();
     const int y = attributes["y"].asInt();
@@ -14,13 +14,13 @@ FoodSource * foodSourceMaker(const Json::Value attributes)
     const int refillTime = attributes["refillTime"].asInt();
     const int refillQuantity = attributes["refillQuantity"].asInt();
 
-    FoodSource * fd = new FoodSource(x, y, refillTime, refillQuantity);
+    Food * fd = new Food(x, y, refillTime, refillQuantity);
 
     return fd;
 
 }
 
-Anthill * anthillMaker(const Json::Value attributes, int anthillIndex)
+Anthill * anthillFactory(const Json::Value attributes, int anthillIndex)
 {
     const int x = attributes["x"].asInt();
     const int y = attributes["y"].asInt();
@@ -31,7 +31,8 @@ Anthill * anthillMaker(const Json::Value attributes, int anthillIndex)
     return ah;
 }
 
-Tile * tileMaker(int x, int y, int nAnts){
-    Tile * t = new Tile(x, y, nAnts);
+Tile * tileFactory(int nAnts)
+{
+    Tile * t = new Tile(nAnts);
     return t;
 }

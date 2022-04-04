@@ -10,9 +10,8 @@ public:
     , indAnthill(anthillIndex)
     , remainingLife(lifetime){}
 
-    void nextTick(){
-        --remainingLife;
-    }
+    void nextTick(){ --remainingLife; }
+    char getMarker() { return 'P'; }
 
 private:
     int remainingLife;
