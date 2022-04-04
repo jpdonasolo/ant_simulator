@@ -30,3 +30,8 @@ Anthill * anthillMaker(const Json::Value attributes, int anthillIndex)
 
     return ah;
 }
+
+Tile * tileMaker(int x, int y, int nAnts){
+    Tile * t = new Tile(x, y, nAnts);
+    return t;
+}

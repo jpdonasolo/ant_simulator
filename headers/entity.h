@@ -1,3 +1,5 @@
+#pragma once
+
 class Entity{
 public:
     Entity(int x, int y)

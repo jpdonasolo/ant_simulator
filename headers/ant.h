@@ -12,6 +12,9 @@ public:
 
     int getindex() const { return indAnthill; };
 
+    void nextTick(){
+        //world::leave_phero(this);
+    }
 private:
     const int indAnthill;
 };

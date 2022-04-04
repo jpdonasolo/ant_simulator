@@ -39,7 +39,10 @@ public:
     */
     int posToInt(int posx, int posy);
 
- 
+    /*
+    Funções úteis às formiguinhaz
+    */
+    void leavePhero(Ant * ant); 
 
 private:
 
@@ -103,8 +106,14 @@ void World::resizeChart()
 {
     const int height = getHeight();
     const int width = getWidth();
-
-    m_chart.resize(height * width);
+    const int nAnts = config["anthills"].size();
+    
+    for(int i=0; i<height; i++){
+        for(int j=0; j<width; j++){
+            Tile * tilePointer = tileMaker(j, i, nAnts);
+            m_chart.push_back(*(tilePointer));
+        }
+    }
 }
 
 void World::addAntsAndHills()
@@ -152,10 +161,9 @@ void World::print()
     const int heightPlusWalls = height + 2;
     const int widthPlusWalls = width + 2;
 
-
-    for(int i = 0; i < widthPlusWalls; ++i){
+    for(int i = 0; i < heightPlusWalls; ++i){
         for(int j = 0; j < widthPlusWalls; ++j){
-            if(i==0 || i==width+1 || j==0 || j==height+1){
+            if(i==0 || i==heightPlusWalls-1 || j==0 || j==widthPlusWalls-1){
                 grid.push_back("X");
             }else{
                 grid.push_back(" ");
@@ -184,12 +192,17 @@ void World::print()
         grid[(foodSourceInfo.getx() + 1) + (widthPlusWalls)*(foodSourceInfo.gety()+1)] = "F";
     }
 
-    for(int i = 0; i < widthPlusWalls; ++i){
+    for(int i = 0; i < heightPlusWalls; ++i){
         for(int j = 0; j < widthPlusWalls; ++j){
             std::cout << grid[i*(heightPlusWalls) + j];
-            if(j==height+1){
+            if(j==heightPlusWalls-1){
                 std::cout << std::endl;
             }
         }
     }
+}
+
+void World::leavePhero(Ant * ant){
+    Pheromone * phero = new Pheromone((*ant).getx(), (*ant).gety(), (*ant).getindex(), config["pheroLifetime"].asInt());
+    m_pheromones.push_back(*(phero));
 }
