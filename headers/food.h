@@ -3,9 +3,9 @@
 #include "entity.h"
 
 
-class FoodSource : public Entity {
+class Food : public Entity {
 public:
-    FoodSource(int x, int y, int rt, int qt)
+    Food(int x, int y, int rt, int qt)
         : Entity(x, y)
         , refillTime(rt)
         , refillQuantity(qt)
