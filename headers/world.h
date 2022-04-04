@@ -53,6 +53,11 @@ private:
     std::vector<Pheromone> m_pheromones;
 
     /*
+    Grid para exibição do mapa
+    */
+   std::vector<char> m_grid;
+
+    /*
     Metadados da simulação - LIDOS DO JSON
     */
     Json::Value config;
@@ -71,12 +76,23 @@ private:
     void resizeChart();
     void addAntsAndHills();
     void addFoodSources();
+
+    /*
+    Funções para exibição do mapa
+    */
+   void setupGrid();
+
+   template <typename entityType>
+   void addEntitiesToGrid(std::vector<entityType> entities);
+
 };
 
 
 void World::setup()
 {
     config = readJson();
+
+    setupGrid();
 
     resizeChart();
     addAntsAndHills();
@@ -105,6 +121,28 @@ void World::resizeChart()
     const int width = getWidth();
 
     m_chart.resize(height * width);
+}
+
+void World::setupGrid()
+{
+    const int heightPlusWalls = getHeight() + 2;
+    const int widthPlusWalls = getWidth() + 2;
+
+    for (int curx = 0; curx < widthPlusWalls; curx++)
+    {
+        for (int cury = 0; cury < heightPlusWalls; cury++)
+        {
+            if (curx == 0 || curx == widthPlusWalls - 1
+                || cury == 0 || cury == heightPlusWalls - 1)
+            {
+                m_grid.push_back('X');
+            }
+            else
+            {
+                m_grid.push_back(' ');
+            }
+        }
+    }
 }
 
 void World::addAntsAndHills()
@@ -144,52 +182,30 @@ int World::posToInt(int posx, int posy){
 
 void World::print()
 {
-    std::vector<std::string> grid;
 
-    const int height = getHeight();
-    const int width = getWidth();
-
-    const int heightPlusWalls = height + 2;
-    const int widthPlusWalls = width + 2;
-
-
-    for(int i = 0; i < widthPlusWalls; ++i){
-        for(int j = 0; j < widthPlusWalls; ++j){
-            if(i==0 || i==width+1 || j==0 || j==height+1){
-                grid.push_back("X");
-            }else{
-                grid.push_back(" ");
-            }
-        }
-    }
-
-    /*
-    A = formigas
-    H = formigueiro
-    F = fonte de comida
-    X = fora do limite do mapa
-    */
-    for (Ant antInfo : m_ants)
-    { 
-        grid[(antInfo.getx() + 1) + (widthPlusWalls)*(antInfo.gety()+1)] = "A";
-    } 
-
-    for (Anthill anthillInfo : m_anthills)
-    { 
-        grid[(anthillInfo.getx() + 1) + (widthPlusWalls)*(anthillInfo.gety()+1)] = "H";
-    } 
-
-    for (FoodSource foodSourceInfo : m_foodSources)
-    { 
-        grid[(foodSourceInfo.getx() + 1) + (widthPlusWalls)*(foodSourceInfo.gety()+1)] = "F";
-    }
+    addEntitiesToGrid<Ant>(m_ants);
+    addEntitiesToGrid<FoodSource>(m_foodSources);
+    addEntitiesToGrid<Anthill>(m_anthills);
+    
+    const int widthPlusWalls = getWidth() + 2;
+    const int heightPlusWalls = getHeight() + 2;
 
     for(int i = 0; i < widthPlusWalls; ++i){
         for(int j = 0; j < widthPlusWalls; ++j){
-            std::cout << grid[i*(heightPlusWalls) + j];
-            if(j==height+1){
+            std::cout << m_grid[i*(heightPlusWalls) + j];
+            if(j==heightPlusWalls-1){
                 std::cout << std::endl;
             }
         }
+    }
+}
+
+template <typename entityType>
+void World::addEntitiesToGrid(std::vector<entityType> entities)
+{
+    for (int idx = 0; idx < entities.size(); idx++)
+    {
+        Entity * entity = &(entities[idx]);
+        m_grid[(entity->getx() + 1) + (getWidth() + 2)*(entity->gety()+1)] = entity->getMarker();
     }
 }

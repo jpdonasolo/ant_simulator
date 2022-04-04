@@ -14,6 +14,8 @@ public:
     int getIndex() const { return ind; };
     int getPopu() const { return popu; };
 
+    char getMarker() { return 'H'; }
+
 private:
     const int ind;
     int popu;

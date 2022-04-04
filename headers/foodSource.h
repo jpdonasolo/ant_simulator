@@ -14,6 +14,8 @@ public:
     int getRefillTime() const { return refillTime; };
     int getRefillQuantity() const { return refillQuantity; };
 
+    char getMarker() { return 'F'; }
+
 private:
     const int refillTime;
     const int refillQuantity;

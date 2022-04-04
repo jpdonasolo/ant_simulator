@@ -2,13 +2,9 @@
 
 #include <vector>
 
-#include "entity.h"
 
-
-struct Tile : public Entity {
+struct Tile {
 public:
-    Tile(int x, int y)
-    : Entity(x, y)
-    {};
+    Tile() {};
 private:
 };
