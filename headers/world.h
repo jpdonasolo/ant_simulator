@@ -3,6 +3,8 @@
 #include <iostream>
 #include <vector>
 #include <fstream>
+#include <mutex>
+#include <thread>
 
 // https://www.codeproject.com/articles/1102603/accessing-json-data-with-cplusplus
 #include <jsoncpp/json/value.h>
@@ -30,6 +32,7 @@ public:
 
     void print();
     void setup();
+    static void update();
 
     /*
     Fora da classe World, trabalhamos com duas coordenadas, x e 
@@ -38,11 +41,6 @@ public:
     no vetor World::m_chart, que guarda o mapa
     */
     int posToInt(int posx, int posy);
-
-    /*
-    Funções úteis às formiguinhaz
-    */
-    void leavePhero(Ant * ant); 
 
 private:
 
@@ -54,6 +52,12 @@ private:
     std::vector<Anthill> m_anthills;
     std::vector<Food> m_foods;
     std::vector<Pheromone> m_pheromones;
+
+    /*
+    Threads
+    */
+   std::vector<std::thread *> m_threads;
+   void setupThreads();
 
     /*
     Grid para exibição do mapa
@@ -89,4 +93,14 @@ private:
     template <typename entityType>
     void addEntitiesToGrid(std::vector<entityType> entities);
 
+    
+    /*
+    Funções úteis às formiguinhaz
+    */
+    void leavePhero(Ant * ant); 
+
+    /*
+    Funções de update para o próximo tick
+    */
+    void updateAnt();
 };

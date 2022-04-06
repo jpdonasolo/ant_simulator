@@ -19,6 +19,8 @@ void World::setup()
 {
     config = readJson();
 
+    setupThreads();
+
     setupGrid();
 
     setupChart();
@@ -39,6 +41,18 @@ Json::Value World::readJson()
     }
 
     return configData;
+    
+}
+
+void World::setupThreads()
+{
+    const int nThreads = config["nThreads"].asInt();
+    int curThread = nThreads;
+
+    while (curThread--)
+    {
+        m_threads.push_back(new std::thread(update));
+    }
     
 }
 
@@ -149,4 +163,9 @@ void World::addEntitiesToGrid(std::vector<entityType> entities)
 void World::leavePhero(Ant * ant){
     Pheromone * phero = new Pheromone((*ant).getx(), (*ant).gety(), (*ant).getindex(), config["pheroLifetime"].asInt());
     m_pheromones.push_back(*(phero));
+}
+
+void World::update()
+{
+    std::cout << "TESTE" << std::endl;
 }

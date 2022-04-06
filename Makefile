@@ -1,5 +1,5 @@
 main: main.o utils.o world.o
-	g++ main.o utils.o world.o -O2 -ljsoncpp -Iheaders -o main
+	g++ main.o utils.o world.o -O2 -ljsoncpp -Iheaders -pthread -o main
 
 main.o: src/main.cpp
 	g++ -c src/main.cpp -O2 -Iheaders
