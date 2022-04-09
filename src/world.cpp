@@ -110,11 +110,11 @@ void World::addAntsAndHills()
         Anthill * ah = anthillFactory(anthillInfo, anthillIndex);
         m_anthills.push_back(*(ah));
 
-        Tile * anthillTile = &(m_chart[posToInt((*ah).getx(),(*ah).gety())]);
+        Tile * anthillTile = &(m_chart[posToInt(ah->getx(), ah->gety())]);
         anthillTile->isAnthill = true;
 
-        for(int i = 0; i<(*ah).getPopu(); i++){
-            Ant * ant = new Ant((*ah).getx(), (*ah).gety(), anthillIndex);
+        for(int i = 0; i<ah->getPopu(); i++){
+            Ant * ant = new Ant(ah->getx(), ah->gety(), anthillIndex);
             int uniform[4] = {1,1,1,1};
             ant->face = randDir(uniform);
             m_ants.push_back(*(ant));
@@ -175,9 +175,9 @@ void World::addEntitiesToGrid(ListOrVector entities)
 
 void World::leavePhero(Ant * ant)
 {
-    Pheromone * phero = new Pheromone((*ant).getx(), (*ant).gety(), (*ant).getAnthillIndex(), config["pheroLifetime"].asInt());
-    Tile * pheroTile = &(m_chart[posToInt((*ant).getx(),(*ant).gety())]);
-    pheroTile->pheroList[(*ant).getAnthillIndex()] ++;
+    Pheromone * phero = new Pheromone(ant->getx(), ant->gety(), ant->getAnthillIndex(), config["pheroLifetime"].asInt());
+    Tile * pheroTile = &(m_chart[posToInt(ant->getx(), ant->gety())]);
+    pheroTile->pheroList[ant->getAnthillIndex()] ++;
     m_pheromones.push_back(*(phero));
 }
 
