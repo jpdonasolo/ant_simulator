@@ -4,7 +4,7 @@ Trabalho referente à A1 da disciplina de Computação Escalável.
 
 ## Coisas a fazer
 
-Principais:
+Obrigatórias por ordem de prioridade:
 
 1) Adicionar a primeira versão de threads com a função World::update()
 2) Arquitetar o sistema de loop final de iterações (como vai funcionar o World::stop()?)
@@ -12,6 +12,7 @@ Principais:
 4) Como vai funcionar o sistema de jantar dos filósofos na comida no CODIGO?
 5) Gerar números verdadeiramente aleátorios ao invés da mesma sequência toda vez na chamada da main()
 6) Comentar cada classe e função de modo a tornar o código mais legível
+7) Limpar a tela a cada print
 
 Extras:
 
