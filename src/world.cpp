@@ -142,6 +142,13 @@ int World::posToInt(int posx, int posy){
     return posx + getWidth() * posy;
 }
 
+/* Grid precisa de uma função diferente, pois as dimensões não são as
+ * mesmas, devido às margens.
+*/
+int World::posToIntGrid(int posx, int posy){
+    return (posx + 1) + (getWidth() + 2) * (posy + 1);
+}
+
 void World::print()
 {   
     setupGrid();
@@ -169,7 +176,7 @@ void World::addEntitiesToGrid(ListOrVector entities)
 {   
     for (auto it = entities.begin() ; it != entities.end(); ++it)
     {   
-        m_grid[(it->getx() + 1) + (getWidth() + 2)*(it->gety()+1)] = it->getMarker();
+        m_grid[posToIntGrid(it->getx(), it->gety())] = it->getMarker();
     }
 }
 
