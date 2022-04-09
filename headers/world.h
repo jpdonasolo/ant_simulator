@@ -80,12 +80,6 @@ public:
         return index;
     }
 
-    // void checkFood(Ant & ant);
-    void checkAnthill(Ant & ant);
-    bool checkInvalidCoordinates(int posx, int posy);
-    void look(Ant & ant);
-    void walk(Ant & ant);
-
     int getHeight() { return config["height"].asInt(); }
     int getWidth() { return config["width"].asInt(); }
 private:
