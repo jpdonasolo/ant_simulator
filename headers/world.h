@@ -59,6 +59,35 @@ public:
     Metadados da simulação - LIDOS DO JSON
     */
     Json::Value config;
+
+    /*
+    Funções úteis às formiguinhaz
+    */
+    // void leavePhero(Ant * ant); 
+
+    template <class EntityGrid>
+    int getEntityIndex(int posx, int posy, EntityGrid entities)
+    {   
+        int index = -1;
+        for (auto it = entities.begin() ; it != entities.end(); ++it)
+        {   
+            index ++;
+            if(it->getx() == posx && it->gety() == posy)
+            {
+                break;
+            }
+        }
+        return index;
+    }
+
+    // void checkFood(Ant & ant);
+    void checkAnthill(Ant & ant);
+    bool checkInvalidCoordinates(int posx, int posy);
+    void look(Ant & ant);
+    void walk(Ant & ant);
+
+    int getHeight() { return config["height"].asInt(); }
+    int getWidth() { return config["width"].asInt(); }
 private:
 
 
@@ -74,8 +103,6 @@ private:
     std::vector<char> m_grid;
 
 
-    int getHeight() { return config["height"].asInt(); }
-    int getWidth() { return config["width"].asInt(); }
 
     /*
     Leitura dos dados necessários à execução do programa
@@ -99,17 +126,6 @@ private:
     void addEntitiesToGrid(ListOrVector entities);
 
     
-    /*
-    Funções úteis às formiguinhaz
-    */
-    void leavePhero(Ant * ant); 
-    template <class EntityGrid>
-    int getEntityIndex(int posx, int posy, EntityGrid entities);
-    void checkFood(Ant & ant);
-    void checkAnthill(Ant & ant);
-    bool checkInvalidCoordinates(int posx, int posy);
-    void look(Ant & ant);
-    void walk(Ant & ant);
 
     /*
     Funções de update para o próximo tick
