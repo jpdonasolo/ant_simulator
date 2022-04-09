@@ -1,7 +1,7 @@
-CXFLAGS = -Iheaders -O2 -ljsoncpp -Wall
+CXFLAGS = -Iheaders -O2 -ljsoncpp # -Wall
 
-main: main.o utils.o world.o
-	g++ main.o utils.o world.o $(CXFLAGS) -o main
+main: main.o ant.o utils.o world.o
+	g++ main.o ant.o utils.o world.o $(CXFLAGS) -o main
 
 main.o: src/main.cpp
 	g++ -c src/main.cpp $(CXFLAGS)
@@ -11,6 +11,9 @@ utils.o: src/utils.cpp
 
 world.o: src/world.cpp
 	g++ -c src/world.cpp $(CXFLAGS)
+
+ant.o: src/ant.cpp headers/ant.h
+	g++ -c src/ant.cpp $(CXFLAGS)
 
 clean:
 	rm *.o

@@ -46,8 +46,6 @@ public:
     int posToInt(int posx, int posy);
     int posToIntGrid(int posx, int posy);
 
-private:
-
     /*
     Entidades da simulação
     */
@@ -56,6 +54,13 @@ private:
     std::vector<Food> m_foods;
     std::list<Ant> m_ants;
     std::list<Pheromone> m_pheromones;
+
+    /*
+    Metadados da simulação - LIDOS DO JSON
+    */
+    Json::Value config;
+private:
+
 
     /*
     Threads
@@ -68,10 +73,6 @@ private:
     */
     std::vector<char> m_grid;
 
-    /*
-    Metadados da simulação - LIDOS DO JSON
-    */
-    Json::Value config;
 
     int getHeight() { return config["height"].asInt(); }
     int getWidth() { return config["width"].asInt(); }

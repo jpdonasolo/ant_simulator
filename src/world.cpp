@@ -180,13 +180,13 @@ void World::addEntitiesToGrid(ListOrVector entities)
     }
 }
 
-void World::leavePhero(Ant * ant)
-{
-    Pheromone * phero = new Pheromone(ant->getx(), ant->gety(), ant->getAnthillIndex(), config["pheroLifetime"].asInt());
-    Tile * pheroTile = &(m_chart[posToInt(ant->getx(), ant->gety())]);
-    pheroTile->pheroList[ant->getAnthillIndex()] ++;
-    m_pheromones.push_back(*(phero));
-}
+// void World::leavePhero(Ant * ant)
+// {
+//     Pheromone * phero = new Pheromone(ant->getx(), ant->gety(), ant->getAnthillIndex(), config["pheroLifetime"].asInt());
+//     Tile * pheroTile = &(m_chart[posToInt(ant->getx(), ant->gety())]);
+//     pheroTile->pheroList[ant->getAnthillIndex()] ++;
+//     m_pheromones.push_back(*(phero));
+// }
 
 template <class EntityGrid>
 int World::getEntityIndex(int posx, int posy, EntityGrid entities)
@@ -407,6 +407,8 @@ void World::update()
      *
      * Como fazer o mecanismo de controle dos Tiles?
      *
+     * Deve acontecer uma sincronização após o update de cada tipo de
+     * objeto.
      */
     // update pheromones
     auto pheromone = m_pheromones.begin();
@@ -426,7 +428,7 @@ void World::update()
     {   
         checkFood(ant);
         checkAnthill(ant);
-        if(ant.mode == bring){ leavePhero(&ant); }
+        if(ant.mode == bring){ ant.leavePhero(); }
         look(ant);
         walk(ant);
     }
