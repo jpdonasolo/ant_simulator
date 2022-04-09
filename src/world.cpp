@@ -113,7 +113,7 @@ void World::addAntsAndHills()
         Tile * anthillTile = &(m_chart[posToInt(ah->getx(), ah->gety())]);
         anthillTile->isAnthill = true;
 
-        for(int i = 0; i<ah->getPopu(); i++){
+        for(int i = 0; i < ah->getPopu(); i++){
             Ant * ant = new Ant(ah->getx(), ah->gety(), anthillIndex);
             int uniform[4] = {1,1,1,1};
             ant->face = randDir(uniform);
@@ -240,13 +240,17 @@ bool World::checkInvalidCoordinates(int posx, int posy)
 
 void World::look(Ant & ant)
 {
+    // Obtém tile da formiga
     Tile * antTile = &(m_chart[posToInt(ant.getx(), ant.gety())]);
+    
+    // Obtém tiles que a formiga enxerga (quadrado vision X vision na
+    // frente dela)
     const int vision = config["vision"].asInt();
     std::list<std::vector<int>> pointsToCheck;
     switch(ant.face){
         case north:
-            for(int i =0; i< vision; i ++){
-                for (int j=-vision; j < vision+1; j++){
+            for(int i = 0; i < vision; i++) {
+                for (int j = -vision; j < vision+1; j++) {
                     std::vector<int> coords;
                     coords.push_back(ant.getx()+j);
                     coords.push_back(ant.gety()-i);
@@ -255,8 +259,8 @@ void World::look(Ant & ant)
             }
             break;
         case east:
-            for(int i =0; i< vision; i ++){
-                for (int j=-vision; j < vision+1; j++){
+            for(int i = 0; i < vision; i++){
+                for (int j= -vision; j < vision+1; j++){
                     std::vector<int> coords;
                     coords.push_back(ant.getx()+i);
                     coords.push_back(ant.gety()+j);
@@ -265,8 +269,8 @@ void World::look(Ant & ant)
             }
             break;
         case south:
-            for(int i =0; i< vision; i ++){
-                for (int j=-vision; j < vision+1; j++){
+            for(int i = 0; i < vision; i++){
+                for (int j = -vision; j < vision+1; j++){
                     std::vector<int> coords;
                     coords.push_back(ant.getx()+j);
                     coords.push_back(ant.gety()+i);
@@ -275,8 +279,8 @@ void World::look(Ant & ant)
             }
             break;
         case west:
-            for(int i =0; i< vision; i ++){
-                for (int j=-vision; j < vision+1; j++){
+            for(int i = 0; i < vision; i++){
+                for (int j= -vision; j < vision+1; j++){
                     std::vector<int> coords;
                     coords.push_back(ant.getx()-i);
                     coords.push_back(ant.gety()+j);
@@ -286,6 +290,8 @@ void World::look(Ant & ant)
             break;
     }
 
+    // Remove tiles inválidos (mesmo tile que a formiga, ta fora do mapa,
+    // etc.)
     auto point = pointsToCheck.begin();
     while (point != pointsToCheck.end()) 
     {
@@ -296,18 +302,23 @@ void World::look(Ant & ant)
             ++point;
         }
     }
+
+    // Antes tínhamos as coordenadas, agora vamos obter pointeiros para
+    // os tiles mesmo.
     std::vector<Tile*> tilesVision;
     for(auto it = pointsToCheck.begin(); it != pointsToCheck.end(); it++)
     {       
         tilesVision.push_back(&(m_chart[posToInt((*it)[0],(*it)[1])]));
     }
+
+    // Vamos ver qual tile tem mais feromônios da colônia daquela formiga
     int maxPhero = 0;
     Tile * tileObj;
 
     for(Tile* tileP : tilesVision)
     {
         
-        if((tileP->pheroList)[ant.getAnthillIndex()]>maxPhero)
+        if((tileP->pheroList)[ant.getAnthillIndex()] > maxPhero)
         {   
             maxPhero = (tileP->pheroList)[ant.getAnthillIndex()];
             tileObj = tileP;
@@ -318,7 +329,7 @@ void World::look(Ant & ant)
     if(ant.mode == bring)
     {
         ant.lookTo(m_anthills[ant.getAnthillIndex()].getx(), m_anthills[ant.getAnthillIndex()].gety());
-    }else if(maxPhero > 0)
+    } else if(maxPhero > 0)
     {
     // caso contrario, checa por tiles com feromonio de comida aos lados, exceto no seu tile
         ant.lookTo(tileObj->getx(), tileObj->gety());
