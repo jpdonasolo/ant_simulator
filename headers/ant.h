@@ -2,6 +2,8 @@
 
 #include "entity.h"
 
+enum antBehavior { seek, bring };
+enum dir { north=0, east=1, south=2, west=3};
 
 class Ant : public Entity {
 public:
@@ -10,13 +12,36 @@ public:
         , indAnthill(anthillIndex)
         {}
 
-    int getindex() const { return indAnthill; }
+    int getAnthillIndex() const { return indAnthill; }
     
-    char getMarker() { return 'A'; }
-
-    void nextTick(){
-        //world::leave_phero(this);
+    char getMarker() 
+    { 
+        if(mode == seek){
+            return 'A'; 
+        }else{
+            return 'B'; 
+        }
     }
+
+    void lookTo(int x, int y)
+    {
+        if(x > posx)
+        {
+            face = east;
+        }else if(x < posx)
+        {
+            face = west;
+        }else if(y > posy)
+        {
+            face = south;
+        }else if(y < posy)
+        {
+            face = north;
+        }
+    }
+
+    dir face;
+    antBehavior mode = seek;
 private:
     const int indAnthill;
 };

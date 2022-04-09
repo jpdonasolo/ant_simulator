@@ -5,6 +5,8 @@
 #include <fstream>
 #include <mutex>
 #include <thread>
+#include <iterator>
+#include <list>
 
 // https://www.codeproject.com/articles/1102603/accessing-json-data-with-cplusplus
 #include <jsoncpp/json/value.h>
@@ -32,7 +34,7 @@ public:
 
     void print();
     void setup();
-    static void update();
+    void update();
 
     /*
     Fora da classe World, trabalhamos com duas coordenadas, x e 
@@ -48,21 +50,21 @@ private:
     Entidades da simulação
     */
     std::vector<Tile> m_chart;
-    std::vector<Ant> m_ants;
     std::vector<Anthill> m_anthills;
     std::vector<Food> m_foods;
-    std::vector<Pheromone> m_pheromones;
+    std::list<Ant> m_ants;
+    std::list<Pheromone> m_pheromones;
 
     /*
     Threads
     */
-   std::vector<std::thread *> m_threads;
-   void setupThreads();
+    std::vector<std::thread *> m_threads;
+    void setupThreads();
 
     /*
     Grid para exibição do mapa
     */
-   std::vector<char> m_grid;
+    std::vector<char> m_grid;
 
     /*
     Metadados da simulação - LIDOS DO JSON
@@ -89,15 +91,22 @@ private:
     Funções para exibição do mapa
     */
     void setupGrid();
-
-    template <typename entityType>
-    void addEntitiesToGrid(std::vector<entityType> entities);
+    
+    template <class ListOrVector>
+    void addEntitiesToGrid(ListOrVector entities);
 
     
     /*
     Funções úteis às formiguinhaz
     */
     void leavePhero(Ant * ant); 
+    template <class EntityGrid>
+    int getEntityIndex(int posx, int posy, EntityGrid entities);
+    void checkFood(Ant & ant);
+    void checkAnthill(Ant & ant);
+    bool checkInvalidCoordinates(int posx, int posy);
+    void look(Ant & ant);
+    void walk(Ant & ant);
 
     /*
     Funções de update para o próximo tick

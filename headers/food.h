@@ -9,12 +9,17 @@ public:
         : Entity(x, y)
         , refillTime(rt)
         , refillQuantity(qt)
+        , currentFood(qt)
+        , currentTime(rt)
         {}
 
     int getRefillTime() const { return refillTime; };
     int getRefillQuantity() const { return refillQuantity; };
 
     char getMarker() { return 'F'; }
+    
+    int currentTime;
+    int currentFood;
 
 private:
     const int refillTime;

@@ -8,12 +8,14 @@ public:
     Pheromone(int x, int y, int anthillIndex, int lifetime)
     : Entity(x, y)
     , indAnthill(anthillIndex)
+    , baseLifetime(lifetime)
     , remainingLife(lifetime){}
 
-    void nextTick(){ --remainingLife; }
     char getMarker() { return 'P'; }
-
-private:
+    int getIndex() { return indAnthill; }
+    
     int remainingLife;
+private:
+    const int baseLifetime;
     const int indAnthill;
 };

@@ -9,10 +9,14 @@ public:
 
     int getx() { return posx; }
     int gety() { return posy; }
+    void addx() { posx++; }
+    void addy() { posy++; }
+    void subx() { posx--; }
+    void suby() { posy--; }
 
     virtual char getMarker() = 0;
 
-private:
-    const int posx;
-    const int posy;
+protected:
+    int posx;
+    int posy;
 };
