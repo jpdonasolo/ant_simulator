@@ -11,7 +11,12 @@ public:
     , baseLifetime(lifetime)
     , remainingLife(lifetime){}
 
-    char getMarker() { return 'P'; }
+    char getMarker() 
+    { 
+        std::string s = std::to_string(remainingLife);
+        const char *pchar = s.c_str();
+        return 'P';
+    }
     int getIndex() { return indAnthill; }
     
     int remainingLife;

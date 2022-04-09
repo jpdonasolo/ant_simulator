@@ -3,18 +3,19 @@
     "height": 6,
     "width": 6,
     "vision": 10,
-    "pheroLifetime":10,
+    "pheroLifetime":300,
     "anthills": [
         {
-            "x": 0,
-            "y": 0,
-            "nAnts": 2
+            "x": 5,
+            "y": 5,
+            "nAnts": 1
         }
     ],
     "foods": [
         {
-            "x": 5,
-            "y": 5,
+            "x": 0,
+            "y": 1,
+            "initialQuantity": 10,
             "refillTime": 5,
             "refillQuantity": 10
         }

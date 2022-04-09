@@ -3,6 +3,10 @@
 #include <fstream>
 #include <iterator>
 #include <list>
+#include <thread>
+#include <mutex>
+#include <condition_variable>
+#include <chrono>
 
 // https://www.codeproject.com/articles/1102603/accessing-json-data-with-cplusplus
 #include <jsoncpp/json/value.h>
@@ -21,13 +25,13 @@ void World::setup()
 {
     config = readJson();
 
-    // setupThreads();
-
     setupGrid();
 
     setupChart();
     addAntsAndHills();
     addFoods();
+    
+    setupThreads();
 }
 
 Json::Value World::readJson()
@@ -46,19 +50,24 @@ Json::Value World::readJson()
     
 }
 
-/*
 void World::setupThreads()
 {
     const int nThreads = config["nThreads"].asInt();
     int curThread = nThreads;
 
     while (curThread--)
-    {
-        m_threads.push_back(new std::thread(update));
+    {       
+        // TEMPORARIO PARA TESTAR THREADS
+        // https://stackoverflow.com/questions/10673585/start-thread-with-member-function
+        m_threads.push_back(new std::thread(&World::update, this));
+    }    
+
+    for(std::thread * t : m_threads)
+    { 
+        t->join();
+        delete t;
     }
-    
 }
-*/
 
 void World::setupChart()
 {   
@@ -110,11 +119,11 @@ void World::addAntsAndHills()
         Anthill * ah = anthillFactory(anthillInfo, anthillIndex);
         m_anthills.push_back(*(ah));
 
-        Tile * anthillTile = &(m_chart[posToInt(ah->getx(), ah->gety())]);
+        Tile * anthillTile = &(m_chart[posToInt((*ah).getx(),(*ah).gety())]);
         anthillTile->isAnthill = true;
 
-        for(int i = 0; i < ah->getPopu(); i++){
-            Ant * ant = new Ant(ah->getx(), ah->gety(), anthillIndex);
+        for(int i = 0; i<(*ah).getPopu(); i++){
+            Ant * ant = new Ant((*ah).getx(), (*ah).gety(), anthillIndex);
             int uniform[4] = {1,1,1,1};
             ant->face = randDir(uniform);
             m_ants.push_back(*(ant));
@@ -133,20 +142,14 @@ void World::addFoods()
         Food * fd = foodFactory(foodInfo);
         m_foods.push_back(*(fd));
 
-        Tile * foodTile = &(m_chart[posToInt(fd->getx(),fd->gety())]);
+        Tile * foodTile = &(m_chart[posToInt((*fd).getx(),(*fd).gety())]);
         foodTile->isFood = true;
     }
 }
 
-int World::posToInt(int posx, int posy){
+int World::posToInt(int posx, int posy)
+{
     return posx + getWidth() * posy;
-}
-
-/* Grid precisa de uma função diferente, pois as dimensões não são as
- * mesmas, devido às margens.
-*/
-int World::posToIntGrid(int posx, int posy){
-    return (posx + 1) + (getWidth() + 2) * (posy + 1);
 }
 
 void World::print()
@@ -156,6 +159,7 @@ void World::print()
     addEntitiesToGrid(m_ants);
     addEntitiesToGrid(m_foods);
     addEntitiesToGrid(m_anthills);
+    addEntitiesToGrid(m_pheromones);
     
     const int widthPlusWalls = getWidth() + 2;
     const int heightPlusWalls = getHeight() + 2;
@@ -176,15 +180,15 @@ void World::addEntitiesToGrid(ListOrVector entities)
 {   
     for (auto it = entities.begin() ; it != entities.end(); ++it)
     {   
-        m_grid[posToIntGrid(it->getx(), it->gety())] = it->getMarker();
+        m_grid[(it->getx() + 1) + (getWidth() + 2)*(it->gety()+1)] = it->getMarker();
     }
 }
 
 void World::leavePhero(Ant * ant)
 {
-    Pheromone * phero = new Pheromone(ant->getx(), ant->gety(), ant->getAnthillIndex(), config["pheroLifetime"].asInt());
-    Tile * pheroTile = &(m_chart[posToInt(ant->getx(), ant->gety())]);
-    pheroTile->pheroList[ant->getAnthillIndex()] ++;
+    Pheromone * phero = new Pheromone((*ant).getx(), (*ant).gety(), (*ant).getAnthillIndex(), config["pheroLifetime"].asInt());
+    Tile * pheroTile = &(m_chart[posToInt((*ant).getx(),(*ant).gety())]);
+    pheroTile->pheroList[(*ant).getAnthillIndex()] ++;
     m_pheromones.push_back(*(phero));
 }
 
@@ -240,17 +244,13 @@ bool World::checkInvalidCoordinates(int posx, int posy)
 
 void World::look(Ant & ant)
 {
-    // Obtém tile da formiga
     Tile * antTile = &(m_chart[posToInt(ant.getx(), ant.gety())]);
-    
-    // Obtém tiles que a formiga enxerga (quadrado vision X vision na
-    // frente dela)
     const int vision = config["vision"].asInt();
     std::list<std::vector<int>> pointsToCheck;
     switch(ant.face){
         case north:
-            for(int i = 0; i < vision; i++) {
-                for (int j = -vision; j < vision+1; j++) {
+            for(int i =0; i< vision; i ++){
+                for (int j=-vision; j < vision+1; j++){
                     std::vector<int> coords;
                     coords.push_back(ant.getx()+j);
                     coords.push_back(ant.gety()-i);
@@ -259,8 +259,8 @@ void World::look(Ant & ant)
             }
             break;
         case east:
-            for(int i = 0; i < vision; i++){
-                for (int j= -vision; j < vision+1; j++){
+            for(int i =0; i< vision; i ++){
+                for (int j=-vision; j < vision+1; j++){
                     std::vector<int> coords;
                     coords.push_back(ant.getx()+i);
                     coords.push_back(ant.gety()+j);
@@ -269,8 +269,8 @@ void World::look(Ant & ant)
             }
             break;
         case south:
-            for(int i = 0; i < vision; i++){
-                for (int j = -vision; j < vision+1; j++){
+            for(int i =0; i< vision; i ++){
+                for (int j=-vision; j < vision+1; j++){
                     std::vector<int> coords;
                     coords.push_back(ant.getx()+j);
                     coords.push_back(ant.gety()+i);
@@ -279,8 +279,8 @@ void World::look(Ant & ant)
             }
             break;
         case west:
-            for(int i = 0; i < vision; i++){
-                for (int j= -vision; j < vision+1; j++){
+            for(int i =0; i< vision; i ++){
+                for (int j=-vision; j < vision+1; j++){
                     std::vector<int> coords;
                     coords.push_back(ant.getx()-i);
                     coords.push_back(ant.gety()+j);
@@ -290,8 +290,6 @@ void World::look(Ant & ant)
             break;
     }
 
-    // Remove tiles inválidos (mesmo tile que a formiga, ta fora do mapa,
-    // etc.)
     auto point = pointsToCheck.begin();
     while (point != pointsToCheck.end()) 
     {
@@ -302,23 +300,18 @@ void World::look(Ant & ant)
             ++point;
         }
     }
-
-    // Antes tínhamos as coordenadas, agora vamos obter pointeiros para
-    // os tiles mesmo.
     std::vector<Tile*> tilesVision;
     for(auto it = pointsToCheck.begin(); it != pointsToCheck.end(); it++)
     {       
         tilesVision.push_back(&(m_chart[posToInt((*it)[0],(*it)[1])]));
     }
-
-    // Vamos ver qual tile tem mais feromônios da colônia daquela formiga
     int maxPhero = 0;
     Tile * tileObj;
 
     for(Tile* tileP : tilesVision)
     {
         
-        if((tileP->pheroList)[ant.getAnthillIndex()] > maxPhero)
+        if((tileP->pheroList)[ant.getAnthillIndex()]>maxPhero)
         {   
             maxPhero = (tileP->pheroList)[ant.getAnthillIndex()];
             tileObj = tileP;
@@ -329,7 +322,7 @@ void World::look(Ant & ant)
     if(ant.mode == bring)
     {
         ant.lookTo(m_anthills[ant.getAnthillIndex()].getx(), m_anthills[ant.getAnthillIndex()].gety());
-    } else if(maxPhero > 0)
+    }else if(maxPhero > 0)
     {
     // caso contrario, checa por tiles com feromonio de comida aos lados, exceto no seu tile
         ant.lookTo(tileObj->getx(), tileObj->gety());
@@ -389,36 +382,69 @@ void World::walk(Ant & ant)
     }
 }
 
+/*
+std::mutex m;
+std::condition_variable cv;
+std::string data;
+bool mainReady = false;
+bool workerReader = false;
+*/
+
 void World::update()
 {   
-    // update pheromones
-    auto pheromone = m_pheromones.begin();
-    while (pheromone != m_pheromones.end()) 
+    //for(int i = 0; i < 2; i++)
+    while(true)
     {
-        pheromone->remainingLife--;
-        if(pheromone->remainingLife == 0)
-        {
-            pheromone = m_pheromones.erase(pheromone);
-        }else{
-            ++pheromone;
+        // update pheromones
+        
+        const int pheroInitialSize = m_pheromones.size();
+        int pheroSize = pheroInitialSize;
+        int pheroIndex = 0;
+        int pheroProcessed = 0;
+        while (pheroIndex < pheroSize) 
+        {   
+            auto pheromone = m_pheromones.begin();
+            std::advance(pheromone, pheroIndex);
+            pheromone->remainingLife--;
+            if(pheromone->remainingLife == 0)
+            {   
+                Tile * pheroTile = &(m_chart[posToInt((*pheromone).getx(),(*pheromone).gety())]);
+                pheroTile->pheroList[(*pheromone).getIndex()] --;
+                pheromone = m_pheromones.erase(pheromone);
+                pheroIndex--;
+                pheroSize--;
+            }
+            pheroIndex++;
+            pheroProcessed++;
         }
-    }
+        if(pheroProcessed!=pheroInitialSize)
+        {   
+            cv.wait();
+        }else{
+            cv.notify_all();
+        }
+        
+    
+        // update ants
+        for (Ant & ant : m_ants)
+        {   
+            checkFood(ant);
+            checkAnthill(ant);
+            if(ant.mode == bring){ leavePhero(&ant); }
+            look(ant);
+            walk(ant);
+        }
 
-    // update ants
-    for (Ant & ant : m_ants)
-    {   
-        checkFood(ant);
-        checkAnthill(ant);
-        if(ant.mode == bring){ leavePhero(&ant); }
-        look(ant);
-        walk(ant);
-    }
+        // update food / restore food
+        for (Food & food : m_foods)
+        {
 
-    // update food / restore food
-    /*
-    for (Food & food : m_foods)
-    {
+        }
 
+        // TEMPORARIO PARA TESTAR THREADS
+        // https://stackoverflow.com/questions/10673585/start-thread-with-member-function
+        std::this_thread::sleep_for(std::chrono::milliseconds(500));
+        print();
     }
-    */
+    return;
 }

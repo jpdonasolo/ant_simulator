@@ -5,11 +5,11 @@
 
 class Food : public Entity {
 public:
-    Food(int x, int y, int rt, int qt)
+    Food(int x, int y, int rt, int qt, int iq)
         : Entity(x, y)
         , refillTime(rt)
         , refillQuantity(qt)
-        , currentFood(qt)
+        , currentFood(iq)
         , currentTime(rt)
         {}
 

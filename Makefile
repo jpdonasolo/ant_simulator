@@ -1,4 +1,4 @@
-CXFLAGS = -Iheaders -O2 -ljsoncpp -Wall
+CXFLAGS = -Iheaders -O2 -ljsoncpp -Wall -pthread
 
 main: main.o utils.o world.o
 	g++ main.o utils.o world.o $(CXFLAGS) -o main
