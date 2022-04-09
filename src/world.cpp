@@ -133,7 +133,7 @@ void World::addFoods()
         Food * fd = foodFactory(foodInfo);
         m_foods.push_back(*(fd));
 
-        Tile * foodTile = &(m_chart[posToInt((*fd).getx(),(*fd).gety())]);
+        Tile * foodTile = &(m_chart[posToInt(fd->getx(),fd->gety())]);
         foodTile->isFood = true;
     }
 }
