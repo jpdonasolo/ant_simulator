@@ -391,6 +391,23 @@ void World::walk(Ant & ant)
 
 void World::update()
 {   
+    /* Ordem de Updates
+     *
+     * Pheromones
+     * Ants
+     * Food
+     * AntHill (?)
+     *
+     * Cada uma dessas classes deve ter um método `update`, que irá
+     * utilizar outros métodos para fazer a entidade cumprir seu papel
+     * naquele turno.
+     *
+     * Esses outros métodos devem implementar mecanismos de controle
+     * para evitar uma condição de corrida.
+     *
+     * Como fazer o mecanismo de controle dos Tiles?
+     *
+     */
     // update pheromones
     auto pheromone = m_pheromones.begin();
     while (pheromone != m_pheromones.end()) 
