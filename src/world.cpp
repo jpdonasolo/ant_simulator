@@ -203,16 +203,11 @@ void World::update()
      * objeto.
      */
     // update pheromones
-    auto pheromone = m_pheromones.begin();
-    while (pheromone != m_pheromones.end()) 
+    auto pheroIt = m_pheromones.begin();
+    while (pheroIt != m_pheromones.end()) 
     {
-        pheromone->remainingLife--;
-        if(pheromone->remainingLife == 0)
-        {
-            pheromone = m_pheromones.erase(pheromone);
-        }else{
-            ++pheromone;
-        }
+        // pheroIt is increased inside update function
+        pheroIt->update(pheroIt);
     }
 
     // update ants
