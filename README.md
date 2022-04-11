@@ -19,3 +19,10 @@ Extras:
 1) Como transformar o grid de texto em uma interface gráfica
 2) Mais tipos de feromonio para conflito entre formigas (para casa, para luta)
 3) Atualizar o sistema de achar caminho da formiga, de modo a considerar pesos para cada feromonio
+
+## Problemas de paralelização
+
+* Paralelizar as threads no update (sincronizar também)
+* Jantar dos filósofos na comida
+* Problema do barbeiro na comida
+* Produtor consumidor na comida (?)

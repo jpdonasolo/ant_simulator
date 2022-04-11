@@ -46,8 +46,6 @@ public:
     int posToInt(int posx, int posy);
     int posToIntGrid(int posx, int posy);
 
-private:
-
     /*
     Entidades da simulação
     */
@@ -56,6 +54,36 @@ private:
     std::vector<Food> m_foods;
     std::list<Ant> m_ants;
     std::list<Pheromone> m_pheromones;
+
+    /*
+    Metadados da simulação - LIDOS DO JSON
+    */
+    Json::Value config;
+
+    /*
+    Funções úteis às formiguinhaz
+    */
+    // void leavePhero(Ant * ant); 
+
+    template <class EntityGrid>
+    int getEntityIndex(int posx, int posy, EntityGrid entities)
+    {   
+        int index = -1;
+        for (auto it = entities.begin() ; it != entities.end(); ++it)
+        {   
+            index ++;
+            if(it->getx() == posx && it->gety() == posy)
+            {
+                break;
+            }
+        }
+        return index;
+    }
+
+    int getHeight() { return config["height"].asInt(); }
+    int getWidth() { return config["width"].asInt(); }
+private:
+
 
     /*
     Threads
@@ -68,13 +96,7 @@ private:
     */
     std::vector<char> m_grid;
 
-    /*
-    Metadados da simulação - LIDOS DO JSON
-    */
-    Json::Value config;
 
-    int getHeight() { return config["height"].asInt(); }
-    int getWidth() { return config["width"].asInt(); }
 
     /*
     Leitura dos dados necessários à execução do programa
@@ -98,17 +120,6 @@ private:
     void addEntitiesToGrid(ListOrVector entities);
 
     
-    /*
-    Funções úteis às formiguinhaz
-    */
-    void leavePhero(Ant * ant); 
-    template <class EntityGrid>
-    int getEntityIndex(int posx, int posy, EntityGrid entities);
-    void checkFood(Ant & ant);
-    void checkAnthill(Ant & ant);
-    bool checkInvalidCoordinates(int posx, int posy);
-    void look(Ant & ant);
-    void walk(Ant & ant);
 
     /*
     Funções de update para o próximo tick
