@@ -12,7 +12,6 @@ Obrigatórias por ordem de prioridade:
 4) Como vai funcionar o sistema de jantar dos filósofos na comida no CODIGO?
 5) Gerar números verdadeiramente aleátorios ao invés da mesma sequência toda vez na chamada da main()
 6) Comentar cada classe e função de modo a tornar o código mais legível
-7) Limpar a tela a cada print
 
 Extras:
 
