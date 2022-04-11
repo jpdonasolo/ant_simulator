@@ -154,6 +154,12 @@ int World::posToInt(int posx, int posy)
 
 void World::print()
 {   
+    // Esse caractere é traduzido para o comando de clear screen
+    // do sistema operacional
+    // https://stackoverflow.com/questions/17335816/clear-screen-using-c
+    // Testado em Windows e Linux
+    std::cout << "\033[2J\033[1;1H";
+
     setupGrid();
 
     addEntitiesToGrid(m_ants);
