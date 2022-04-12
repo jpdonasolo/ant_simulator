@@ -3,6 +3,7 @@
 #include <jsoncpp/json/value.h>
 #include <cstdlib>
 #include <iostream>
+#include <mutex>
 
 enum dir { north=0, east=1, south=2, west=3};
 class Food;
@@ -28,3 +29,23 @@ const std::string magenta("\033[0;35m");
 const std::string reset("\033[0m");
 const int TOTALCOLORS = 4;
 std::string color(int idx);
+
+
+class MaxEntitiesReached{};
+
+
+class FlowController
+{
+public:
+    FlowController() { reset(); }
+    
+    void reset();
+    int next();
+    void setMax(int max) { max = max; };
+
+private:
+    int max;
+    int current;
+
+    std::mutex m;
+};
