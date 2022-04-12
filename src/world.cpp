@@ -139,11 +139,14 @@ void World::addFoods()
 
     for (Json::Value foodInfo : foodsInfo)
     {
-        Food * fd = foodFactory(foodInfo);
+        Food * fd = foodFactory(foodInfo, this);
         m_foods.push_back(*(fd));
 
         Tile * foodTile = &(m_chart[posToInt((*fd).getx(),(*fd).gety())]);
-        foodTile->isFood = true;
+        if(fd->currentFood>0)
+        {
+            foodTile->hasFood = true;
+        }
     }
 }
 
@@ -155,11 +158,11 @@ int World::posToInt(int posx, int posy)
 void World::print()
 {   
     setupGrid();
-
+    
+    addEntitiesToGrid(m_pheromones);
     addEntitiesToGrid(m_ants);
     addEntitiesToGrid(m_foods);
     addEntitiesToGrid(m_anthills);
-    addEntitiesToGrid(m_pheromones);
     
     const int widthPlusWalls = getWidth() + 2;
     const int heightPlusWalls = getHeight() + 2;
@@ -184,15 +187,6 @@ void World::addEntitiesToGrid(ListOrVector entities)
     }
 }
 
-
-/*
-std::mutex m;
-std::condition_variable cv;
-std::string data;
-bool mainReady = false;
-bool workerReader = false;
-*/
-
 void World::update()
 {   
     /* Ordem de Updates
@@ -214,9 +208,9 @@ void World::update()
      * Deve acontecer uma sincronização após o update de cada tipo de
      * objeto.
      */
-    // update pheromones
     while(true)
     {
+        // update pheromones
         auto pheroIt = m_pheromones.begin();
         while (pheroIt != m_pheromones.end()) 
         {
@@ -230,8 +224,12 @@ void World::update()
             ant.update();
         }
 
-        // TEMPORARIO PARA TESTAR THREADS
-        // https://stackoverflow.com/questions/10673585/start-thread-with-member-function
+        // update food
+        for (Food & food : m_foods)
+        {
+            food.update();
+        }
+
         std::this_thread::sleep_for(std::chrono::milliseconds(500));
         print();
     }      
