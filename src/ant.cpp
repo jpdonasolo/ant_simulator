@@ -95,6 +95,7 @@ void Ant::getFood(Food * food)
         // Philosophers dinner
         philosopher(seat, food);
         food->seatsAvailable.release();
+        food->seats[seat].unlock();
     } else {
         takeGuard();
     }
