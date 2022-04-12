@@ -12,7 +12,7 @@ public:
     char getMarker() { return 'T'; }
 
     std::vector<int> pheroList; 
-	bool isFood = false;
+	bool hasFood = false;
 	bool isAnthill = false;
 private:
 };

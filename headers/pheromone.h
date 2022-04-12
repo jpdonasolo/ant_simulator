@@ -16,7 +16,7 @@ public:
 
     char getMarker() 
     { 
-        return 'P';
+        return '.';
     }
     int getIndex() { return indAnthill; }
     void update(std::list<Pheromone*>::iterator&);

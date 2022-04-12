@@ -3,6 +3,7 @@
 #include "ant.h"
 #include "world.h"
 #include "food.h"
+#include "pheromone.h"
 
 
 // Philosophers dinner stuff
@@ -30,22 +31,27 @@ char Ant::getMarker()
     }
 }
 
-
+//enum dir { north=0, east=1, south=2, west=3};
 void Ant::lookTo(int x, int y)
-{
+{   
+    int weight[4] = {0,0,0,0};
+    if (y < posy)
+    {
+        weight[0] = 1;
+    }
     if (x > posx)
     {
-        face = east;
-    } else if (x < posx)
-    {
-        face = west;
-    } else if (y > posy)
-    {
-        face = south;
-    } else if (y < posy)
-    {
-        face = north;
+        weight[1] = 1;
     }
+    if (y > posy)
+    {
+        weight[2] = 1;
+    }
+    if (x < posx)
+    {
+        weight[3] = 1;
+    }
+    face = randDir(weight);
 }
 
 
@@ -70,7 +76,7 @@ void Ant::leavePhero()
 void Ant::checkFood()
 {
     Tile * antTile = worldP->m_chart[worldP->posToInt(getx(), gety())];
-    if (antTile->isFood == true)
+    if (antTile->hasFood == true)
     {
         int foodIndex = worldP->getEntityIndex(getx(), gety(), worldP->m_foods);
         Food * food = worldP->m_foods[foodIndex];
@@ -177,6 +183,7 @@ void Ant::checkAnthill()
 bool Ant::checkInvalidCoordinates(int posx, int posy)
 {   
     if(posx >= worldP->getWidth() || posx < 0 || posy >= worldP->getHeight() || posy < 0){ return true; }
+    if(posx == getx() && posy == gety()){ return true; }
     return false;
 }
 
@@ -238,7 +245,7 @@ void Ant::look()
     auto point = pointsToCheck.begin();
     while (point != pointsToCheck.end()) 
     {
-        if (checkInvalidCoordinates((*point)[0], (*point)[1]) || ((*point)[0] == getx() && (*point)[1] == gety()))
+        if (checkInvalidCoordinates((*point)[0], (*point)[1]))
         {
             point = pointsToCheck.erase(point);
         } else {
@@ -256,15 +263,28 @@ void Ant::look()
 
     // Vamos ver qual tile tem mais feromônios da colônia daquela formiga
     int maxPhero = 0;
-    Tile * tileObj;
-
+    double maxDistPhero = dist(0,0,worldP->getWidth(),worldP->getHeight());
+    double maxDistFood = maxDistPhero;
+    double curDist;
+    bool foodInSight = false;
+    Tile * tileObj = tilesVision[0];
     for (Tile * tileP : tilesVision)
     {
-        
-        if ((tileP->pheroList)[getAnthillIndex()] > maxPhero)
-        {   
-            maxPhero = (tileP->pheroList)[getAnthillIndex()];
+        curDist = dist(posx, posy, tileP->getx(), tileP->gety());
+        if ((tileP->hasFood == true) && (curDist < maxDistFood))
+        {
             tileObj = tileP;
+            maxDistFood = curDist;
+            foodInSight = true;
+        }
+        else if ((tileP->pheroList)[getAnthillIndex()] > 0 && foodInSight == false)
+        {   
+            if((tileP->pheroList)[getAnthillIndex()] >= maxPhero && curDist < maxDistPhero)
+            {    
+                tileObj = tileP;
+                maxDistPhero = curDist;
+                maxPhero = (tileP->pheroList)[getAnthillIndex()];
+            }
         }
     }
 
@@ -272,7 +292,7 @@ void Ant::look()
     if(mode == bring)
     {
        lookTo(worldP->m_anthills[getAnthillIndex()]->getx(), worldP->m_anthills[getAnthillIndex()]->gety());
-    } else if(maxPhero > 0)
+    } else if(foodInSight || maxPhero > 0)
     {
     // caso contrario, checa por tiles com feromonio de comida aos lados, exceto no seu tile
         lookTo(tileObj->getx(), tileObj->gety());
@@ -282,7 +302,7 @@ void Ant::look()
         face = mapInd((mapDir(face)+2)%4);
     } else
     {
-    // caso nenhuma das condicoes anteriores, ande para frente com prob 6, 3 pros lados e 1 para trás
+    // caso nenhuma das condicoes anteriores, ande para frente com maior prob doq os lados
         int weight[4];
         weight[mapDir(face)] = 10;
         weight[(mapDir(face)+1)%4] = 2;

@@ -6,9 +6,12 @@
 #include <mutex>
 #include <algorithm> // max function
 
+class World;
+
 class Food : public Entity {
 public:
-    Food(int x, int y, int rt, int qt, int iq, const int numSticks)
+    Food(int x, int y, int rt, int qt, int iq, const int numSticks,
+         World * WorldPtr)
         // numSeats = numSticks = number of ants in food source
         : Entity(x, y)
         , refillTime(rt)
@@ -33,6 +36,8 @@ public:
     }
 
     char getMarker() { return 'F'; }
+
+    void update();
     
     int currentTime;
     std::mutex foodCounterMutex;
@@ -58,4 +63,5 @@ public:
 private:
     const int refillTime;
     const int refillQuantity;
+    World * worldP;
 };
