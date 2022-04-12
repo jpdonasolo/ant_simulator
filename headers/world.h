@@ -107,9 +107,6 @@ private:
     /*
     Funções de update
     */
-//    template <class EntityType>
-//    void updateEntities(FlowController & fc, EntityType & entities);
-
     template <class EntityType>
     void updateEntities(FlowController & fc, EntityType & entities);
 };
