@@ -21,6 +21,7 @@
 #include "utils.h"
 
 
+
 void World::setup()
 {
     config = readJson();
@@ -194,12 +195,18 @@ void World::addEntitiesToGrid(ListOrVector entities, std::vector<std::string> & 
 
 void World::update()
 {   
-    // update pheromones
-    auto pheroIt = m_pheromones.begin();
-    while (pheroIt != m_pheromones.end()) 
+    
+    FlowController fg;
+    fg.setMax(m_pheromones.size());
+    updateEntities(fg, m_pheromones);
+
+    std::vector<Pheromone*> nPhero;
+    for (auto phero : m_pheromones)
     {
-        // pheroIt is increased inside update function
-        (*pheroIt)->update(pheroIt);
+        if (phero->remainingLife != 0)
+        {
+            nPhero.push_back(phero);
+        }
     }
 
     // update ants

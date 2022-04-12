@@ -51,7 +51,7 @@ public:
     std::vector<Anthill*> m_anthills;
     std::vector<Food*> m_foods; // To be able to work with mutex array
     std::list<Ant*> m_ants;
-    std::list<Pheromone*> m_pheromones;
+    std::vector<Pheromone*> m_pheromones;
 
     /*
     Metadados da simulação - LIDOS DO JSON
@@ -103,4 +103,30 @@ private:
     
     template <class ListOrVector>
     void addEntitiesToGrid(ListOrVector entities, std::vector<std::string> & m_grid);
+
+    /*
+    Funções de update
+    */
+   template <class EntityType>
+   void updateEntities(FlowController & fg, EntityType entities);
 };
+
+template <class EntityType>
+void World::updateEntities(FlowController & fg, EntityType entities)
+{
+
+    int idx;
+
+    while (true)
+    {
+        try
+        {
+            idx = fg.next();
+            entities[idx]->update();
+        }
+        catch (const MaxEntitiesReached & e)
+        {
+            break;
+        }
+    }
+}
