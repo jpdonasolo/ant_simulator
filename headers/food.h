@@ -1,6 +1,11 @@
 #pragma once
 
+#include <list>
+#include <string>
+
 #include "entity.h"
+#include "utils.h"
+
 
 class World;
 
@@ -19,6 +24,7 @@ public:
     int getRefillQuantity() const { return refillQuantity; };
 
     char getMarker() { return 'F'; }
+    std::string getColor(){ return color(4); }
 
     void update();
     

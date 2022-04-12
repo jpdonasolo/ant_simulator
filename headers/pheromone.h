@@ -1,7 +1,10 @@
 #pragma once
 
-#include "entity.h"
 #include <list>
+#include <string>
+
+#include "entity.h"
+#include "utils.h"
 
 class World;
 
@@ -19,6 +22,7 @@ public:
         return '.';
     }
     int getIndex() { return indAnthill; }
+    std::string getColor(){ return color(getIndex()%TOTALCOLORS); }
     void update(std::list<Pheromone>::iterator&);
     
     int remainingLife;

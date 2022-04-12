@@ -19,7 +19,6 @@
 #include "tile.h"
 #include "world.h"
 #include "utils.h"
-#include "colors.h"
 
 
 void World::setup()
@@ -174,15 +173,20 @@ void World::print()
     // Testado em Windows e Linux
     std::cout << "\033[2J\033[1;1H";
 
-    std::vector<char> m_grid(m_grid_base); 
-    
+    const int widthPlusWalls = getWidth() + 2;
+    const int heightPlusWalls = getHeight() + 2;
+
+    std::vector<std::string> m_grid(widthPlusWalls*heightPlusWalls,""); 
+    for(int i = 0; i < heightPlusWalls; ++i){
+        for(int j = 0; j < widthPlusWalls; ++j){
+            m_grid[(i*widthPlusWalls)+j] += m_grid_base[(i*widthPlusWalls)+j];
+        };
+    };
+
     addEntitiesToGrid(m_pheromones, m_grid);
     addEntitiesToGrid(m_ants, m_grid);
     addEntitiesToGrid(m_foods, m_grid);
     addEntitiesToGrid(m_anthills, m_grid);
-    
-    const int widthPlusWalls = getWidth() + 2;
-    const int heightPlusWalls = getHeight() + 2;
 
     for(int i = 0; i < heightPlusWalls; ++i){
         for(int j = 0; j < widthPlusWalls; ++j){
@@ -196,11 +200,15 @@ void World::print()
 }
 
 template <class ListOrVector>
-void World::addEntitiesToGrid(ListOrVector entities, std::vector<char> & m_grid)
+void World::addEntitiesToGrid(ListOrVector entities, std::vector<std::string> & m_grid)
 {   
     for (auto it = entities.begin() ; it != entities.end(); ++it)
     {   
-        m_grid[(it->getx() + 1) + (getWidth() + 2)*(it->gety()+1)] = it->getMarker();
+        std::string marker = "";
+        marker += it->getColor();
+        marker += it->getMarker();
+        marker += reset;
+        m_grid[(it->getx() + 1) + (getWidth() + 2)*(it->gety()+1)] = marker;
     }
 }
 
@@ -247,7 +255,7 @@ void World::update()
             food.update();
         }
 
-        std::this_thread::sleep_for(std::chrono::milliseconds(500));
+        std::this_thread::sleep_for(std::chrono::milliseconds(200));
         print();
     }      
     return;

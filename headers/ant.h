@@ -1,11 +1,13 @@
 #pragma once
 
+#include <string>
+
 #include "entity.h"
+#include "utils.h"
 
 // Para poder ter um ponteiro para o world
 class World;
 enum antBehavior { seek, bring };
-enum dir { north=0, east=1, south=2, west=3};
 
 class Ant : public Entity {
 public:
@@ -16,6 +18,7 @@ public:
         {}
 
     int getAnthillIndex() const { return indAnthill; }
+    std::string getColor(){ return color(getAnthillIndex()%TOTALCOLORS); }
     char getMarker();
     void lookTo(int x, int y);
     void leavePhero();

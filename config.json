@@ -1,7 +1,7 @@
 {
     "nThreads": 1,
-    "height": 10,
-    "width": 10,
+    "height": 30,
+    "width": 30,
     "vision": 5,
     "pheroLifetime": 20,
     "anthills": [
@@ -9,12 +9,22 @@
             "x": 0,
             "y": 0,
             "nAnts": 2
+        },
+        {
+            "x": 9,
+            "y": 0,
+            "nAnts": 2
+        },
+        {
+            "x": 0,
+            "y": 9,
+            "nAnts": 2
         }
     ],
     "foods": [
         {
-            "x": 9,
-            "y": 9,
+            "x": 25,
+            "y": 25,
             "initialQuantity": 10,
             "refillTime": 5,
             "refillQuantity": 10

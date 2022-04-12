@@ -139,3 +139,13 @@ double dist(int x1, int y1, int x2, int y2)
     double d = sqrt(pow((x1-x2),2)+pow((y1-y2),2));
     return d;
 }
+
+std::string color(int idx)
+{   
+    if(idx==0){ return red; };
+    if(idx==1){ return green; };
+    if(idx==2){ return yellow; };
+    if(idx==3){ return cyan; };
+    if(idx==4){ return magenta; };
+    return "";
+}

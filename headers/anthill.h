@@ -1,6 +1,9 @@
 #pragma once
 
+#include <string>
+
 #include "entity.h"
+#include "utils.h"
 
 
 class Anthill : public Entity {
@@ -12,6 +15,7 @@ public:
         {}
 
     int getIndex() const { return ind; };
+    std::string getColor(){ return color(getIndex()%TOTALCOLORS); }
     int getPopu() const { return popu; };
 
     char getMarker() { return 'H'; }

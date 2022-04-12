@@ -17,7 +17,6 @@
 #include "food.h"
 #include "pheromone.h"
 #include "tile.h"
-
 #include "utils.h"
 
 
@@ -111,5 +110,5 @@ private:
     void setupGrid();
     
     template <class ListOrVector>
-    void addEntitiesToGrid(ListOrVector entities, std::vector<char> & m_grid);
+    void addEntitiesToGrid(ListOrVector entities, std::vector<std::string> & m_grid);
 };
