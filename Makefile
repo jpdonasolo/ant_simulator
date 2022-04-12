@@ -1,5 +1,5 @@
 CXX = g++
-CXFLAGS =  -Iheaders -O2 -ljsoncpp -pthread # -Wall
+CXFLAGS =  -Iheaders -O2 -ljsoncpp -pthread -g # -Wall
 
 main: main.o ant.o pheromone.o food.o utils.o world.o
 	$(CXX) main.o ant.o pheromone.o food.o utils.o world.o $(CXFLAGS) -o main
