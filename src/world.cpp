@@ -19,6 +19,7 @@
 #include "tile.h"
 #include "world.h"
 #include "utils.h"
+#include "colors.h"
 
 
 void World::setup()
@@ -88,22 +89,32 @@ void World::setupChart()
 
 void World::setupGrid()
 {   
-    m_grid.clear();
     const int heightPlusWalls = getHeight() + 2;
     const int widthPlusWalls = getWidth() + 2;
 
-    for (int curx = 0; curx < widthPlusWalls; curx++)
+    for(int cury = 0; cury < heightPlusWalls; cury++)
     {
-        for (int cury = 0; cury < heightPlusWalls; cury++)
+        for(int curx = 0; curx < widthPlusWalls; curx++)
         {
-            if (curx == 0 || curx == widthPlusWalls - 1
-                || cury == 0 || cury == heightPlusWalls - 1)
+            if ((curx == 0 && cury == 0) || (curx == widthPlusWalls - 1 && cury == heightPlusWalls - 1))
             {
-                m_grid.push_back('X');
+                m_grid_base.push_back('/');
+            }
+            else if ((curx == widthPlusWalls - 1 && cury == 0) || (curx == 0 && cury == heightPlusWalls - 1))
+            {
+                m_grid_base.push_back('\\');
+            }
+            else if ((curx > widthPlusWalls - 2) || (curx < 1))
+            {
+                m_grid_base.push_back('|');
+            }
+            else if ((cury < 1) || (cury > heightPlusWalls - 2))
+            {
+                m_grid_base.push_back('-');
             }
             else
             {
-                m_grid.push_back(' ');
+                m_grid_base.push_back(' ');
             }
         }
     }
@@ -164,20 +175,20 @@ void World::print()
     // Testado em Windows e Linux
     std::cout << "\033[2J\033[1;1H";
 
-    setupGrid();
+    std::vector<char> m_grid(m_grid_base); 
     
-    addEntitiesToGrid(m_pheromones);
-    addEntitiesToGrid(m_ants);
-    addEntitiesToGrid(m_foods);
-    addEntitiesToGrid(m_anthills);
+    addEntitiesToGrid(m_pheromones, m_grid);
+    addEntitiesToGrid(m_ants, m_grid);
+    addEntitiesToGrid(m_foods, m_grid);
+    addEntitiesToGrid(m_anthills, m_grid);
     
     const int widthPlusWalls = getWidth() + 2;
     const int heightPlusWalls = getHeight() + 2;
 
-    for(int i = 0; i < widthPlusWalls; ++i){
+    for(int i = 0; i < heightPlusWalls; ++i){
         for(int j = 0; j < widthPlusWalls; ++j){
-            std::cout << m_grid[i*(heightPlusWalls) + j];
-            if(j==heightPlusWalls-1){
+            std::cout << m_grid[i*(widthPlusWalls) + j];
+            if(j==widthPlusWalls-1){
                 std::cout << std::endl;
             }
         }
@@ -186,7 +197,7 @@ void World::print()
 }
 
 template <class ListOrVector>
-void World::addEntitiesToGrid(ListOrVector entities)
+void World::addEntitiesToGrid(ListOrVector entities, std::vector<char> & m_grid)
 {   
     for (auto it = entities.begin() ; it != entities.end(); ++it)
     {   

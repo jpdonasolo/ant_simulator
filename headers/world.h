@@ -91,7 +91,7 @@ private:
     /*
     Grid para exibição do mapa
     */
-    std::vector<char> m_grid;
+    std::vector<char> m_grid_base;
 
     /*
     Leitura dos dados necessários à execução do programa
@@ -111,5 +111,5 @@ private:
     void setupGrid();
     
     template <class ListOrVector>
-    void addEntitiesToGrid(ListOrVector entities);
+    void addEntitiesToGrid(ListOrVector entities, std::vector<char> & m_grid);
 };

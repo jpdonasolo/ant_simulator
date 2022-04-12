@@ -24,11 +24,8 @@ int right(int i, int N)
 
 char Ant::getMarker()
 {
-    if (mode == seek) {
-        return 'A'; 
-    } else {
-        return 'B'; 
-    }
+    std::vector<char> dirChars = {'^','>','v','<'};
+    return dirChars[mapDir(face)];
 }
 
 //enum dir { north=0, east=1, south=2, west=3};
