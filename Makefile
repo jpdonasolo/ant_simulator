@@ -1,26 +1,24 @@
-CXX = g++
-CXFLAGS =  -Iheaders -O2 -ljsoncpp -pthread -g
+CXXFLAGS += -Iheaders -O2 -ljsoncpp -pthread -g
+# CXXFLAGS += -Wall
 
-main: main.o ant.o pheromone.o food.o utils.o world.o
-	$(CXX) main.o ant.o pheromone.o food.o utils.o world.o $(CXFLAGS) -o main
+HEADERS = ant.h pheromone.h utils.h world.h entity.h semaphore.h tile.h
+OBJECTS = ant.o pheromone.o utils.o world.o food.o
 
-main.o: src/main.cpp
-	$(CXX) -c src/main.cpp $(CXFLAGS)
+.PHONY: all
+all: main
 
-utils.o: src/utils.cpp
-	$(CXX) -c src/utils.cpp $(CXFLAGS)
+main: .build/main.o $(addprefix .build/,$(OBJECTS))
+	$(CXX) .build/main.o $(addprefix .build/,$(OBJECTS)) -o $@ $(CXXFLAGS)
 
-world.o: src/world.cpp
-	$(CXX) -c src/world.cpp $(CXFLAGS)
+.build/%.o: src/%.cpp $(addprefix headers/,$(HEADERS)) | .build/
+	$(CXX) -c $< -o $@ $(CXXFLAGS)
 
-food.o: src/food.cpp headers/food.h
-	g++ -c src/food.cpp $(CXFLAGS)
+.build/main.o: src/main.cpp $(addprefix headers/,$(HEADERS)) | .build/
+	$(CXX) -c $< -o $@ $(CXXFLAGS)
 
-ant.o: src/ant.cpp headers/ant.h
-	$(CXX) -c src/ant.cpp $(CXFLAGS)
-
-pheromone.o: src/pheromone.cpp headers/pheromone.h
-	$(CXX) -c src/pheromone.cpp $(CXFLAGS)
+.build/:
+	mkdir -p $@
 
 clean:
-	rm *.o
+	rm -rf .build
+	rm -f main
