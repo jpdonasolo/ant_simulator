@@ -14,11 +14,11 @@ void Food::update()
     {
         currentTime = refillTime;
         currentFood += refillQuantity;
-        ((worldP->m_chart)[tileIdx]).hasFood = true;
+        worldP->m_chart[tileIdx]->hasFood = true;
     }
     
     if(currentFood==0)
     {
-        ((worldP->m_chart)[tileIdx]).hasFood = false;
+        worldP->m_chart[tileIdx]->hasFood = false;
     }
 }

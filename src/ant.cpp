@@ -6,6 +6,22 @@
 #include "pheromone.h"
 
 
+// Philosophers dinner stuff
+const int NOT_EATING = 0;
+const int HUNGRY = 1;
+const int EATING = 2;
+
+int left(int i, int N)
+{
+    return (i + N - 1) % N;
+}
+
+int right(int i, int N)
+{
+    return (i + 1) % N;
+}
+
+
 char Ant::getMarker()
 {
     std::vector<char> dirChars = {'^','>','v','<'};
@@ -39,31 +55,118 @@ void Ant::lookTo(int x, int y)
 void Ant::leavePhero()
 {
     Pheromone * phero = new Pheromone(getx(), gety(), getAnthillIndex(), worldP->config["pheroLifetime"].asInt(), worldP);
-    Tile * pheroTile = &(worldP->m_chart[worldP->posToInt(getx(), gety())]);
+    Tile * pheroTile = worldP->m_chart[worldP->posToInt(getx(), gety())];
     pheroTile->pheroList[getAnthillIndex()]++;
-    worldP->m_pheromones.push_back(*(phero));
+    worldP->m_pheromones.push_back(phero);
 }
 
 
+/* Checar se tá num tile de food
+ * Checar se tem comida
+ * Requisitar bastões
+ * Se conseguir:
+ *  checar se ainda tem comida
+ *  comer
+ * Se não conseguir:
+ *  ficar de guarda (por enquanto = fazer nada)
+ */
 void Ant::checkFood()
 {
-    Tile * antTile = &(worldP->m_chart[worldP->posToInt(getx(), gety())]);
+    Tile * antTile = worldP->m_chart[worldP->posToInt(getx(), gety())];
     if (antTile->hasFood == true)
     {
         int foodIndex = worldP->getEntityIndex(getx(), gety(), worldP->m_foods);
-        Food * food = &(worldP->m_foods[foodIndex]); 
+        Food * food = worldP->m_foods[foodIndex];
         if (food->currentFood > 0 && mode == seek)
         {
-            food->currentFood--;
-            mode = bring;
+            getFood(food);
         }
     }
 }
 
+void Ant::getFood(Food * food)
+{
+    if (hasSeat(food))
+    {
+        int seat = takeSeat(food);
+        // Philosophers dinner
+        philosopher(seat, food);
+        food->seatsAvailable.release();
+        food->seats[seat].unlock();
+    } else {
+        takeGuard();
+    }
+}
+
+bool Ant::hasSeat(Food * food)
+{
+    return food->seatsAvailable.try_acquire();
+}
+
+int Ant::takeSeat(Food * food)
+{
+    // There must be a seat
+    while (true)
+    {
+        for (int i = 0; i < food->numSeats; i++)
+        {
+            if (food->seats[i].try_lock())
+            {
+                return i;
+            }
+        }
+    }
+}
+
+void Ant::philosopher(int i, Food * food)
+{
+    takeForks(i, food);
+    eat(food);
+    putForks(i, food);
+}
+
+void Ant::takeForks(int i, Food * food)
+{
+    food->m.lock();
+    food->state[i] = HUNGRY;
+    test(i, food);
+    food->m.unlock();
+    food->s[i].lock();
+}
+
+void Ant::putForks(int i, Food * food)
+{
+    int N = food->numSeats;
+    food->m.lock();
+    food->state[i] = NOT_EATING;
+    test(left(i, N), food);
+    test(right(i, N), food);
+    food->m.unlock();
+}
+
+void Ant::test(int i, Food * food)
+{
+    int N = food->numSeats;
+    if (food->state[i] == HUNGRY
+     && food->state[left(i, N)] != EATING
+     && food->state[right(i, N)] != EATING)
+    {
+        food->state[i] = EATING;
+        food->s[i].unlock();
+    }
+}
+
+void Ant::eat(Food * food)
+{
+    food->decreaseFoodCount();
+    mode = bring;
+}
+
+
 
 void Ant::checkAnthill()
 {
-    Tile * antTile = &(worldP->m_chart[worldP->posToInt(getx(), gety())]);
+    Tile * antTile = worldP->m_chart[worldP->posToInt(getx(), gety())];
     if(antTile->isAnthill == true)
     {
         int anthillIndex = worldP->getEntityIndex(getx(), gety(), worldP->m_anthills);
@@ -86,7 +189,7 @@ bool Ant::checkInvalidCoordinates(int posx, int posy)
 void Ant::look()
 {
     // Obtém tile da formiga
-    Tile * antTile = &(worldP->m_chart[worldP->posToInt(getx(), gety())]);
+    Tile * antTile = worldP->m_chart[worldP->posToInt(getx(), gety())];
     
     // Obtém tiles que a formiga enxerga (quadrado 2*vision X vision na
     // frente dela)
@@ -153,7 +256,7 @@ void Ant::look()
     std::vector<Tile*> tilesVision;
     for(auto it = pointsToCheck.begin(); it != pointsToCheck.end(); it++)
     {       
-        tilesVision.push_back(&(worldP->m_chart[worldP->posToInt((*it)[0],(*it)[1])]));
+        tilesVision.push_back(worldP->m_chart[worldP->posToInt((*it)[0],(*it)[1])]);
     }
 
     // Vamos ver qual tile tem mais feromônios da colônia daquela formiga
@@ -186,7 +289,7 @@ void Ant::look()
     // checa se tá bring, direciona formigueiro
     if(mode == bring)
     {
-        lookTo(worldP->m_anthills[getAnthillIndex()].getx(), worldP->m_anthills[getAnthillIndex()].gety());
+       lookTo(worldP->m_anthills[getAnthillIndex()]->getx(), worldP->m_anthills[getAnthillIndex()]->gety());
     } else if(foodInSight || maxPhero > 0)
     {
     // caso contrario, checa por tiles com feromonio de comida aos lados, exceto no seu tile

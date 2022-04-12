@@ -27,7 +27,8 @@
             "y": 25,
             "initialQuantity": 10,
             "refillTime": 5,
-            "refillQuantity": 10
+            "refillQuantity": 10,
+            "numSticks": 4
         }
     ]
 }

@@ -110,8 +110,10 @@ Food * foodFactory(const Json::Value attributes, World * worldP)
     const int refillTime = attributes["refillTime"].asInt();
     const int refillQuantity = attributes["refillQuantity"].asInt();
     int initialQuantity = attributes["initialQuantity"].asInt();
+    int numSticks = attributes["numSticks"].asInt();
 
-    Food * fd = new Food(x, y, refillTime, refillQuantity, initialQuantity, worldP);
+    Food * fd = new Food(x, y, refillTime, refillQuantity,
+                         initialQuantity, numSticks, worldP);
 
     return fd;
 
