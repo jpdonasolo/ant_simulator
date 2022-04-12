@@ -1,6 +1,7 @@
 #include <jsoncpp/json/value.h>
 #include <cstdlib>
 #include <iostream>
+#include <cmath>
 
 #include "food.h"
 #include "ant.h"
@@ -101,7 +102,7 @@ dir randDir(int weight[4])
     return direction;
 }
 
-Food * foodFactory(const Json::Value attributes)
+Food * foodFactory(const Json::Value attributes, World * worldP)
 {
     const int x = attributes["x"].asInt();
     const int y = attributes["y"].asInt();
@@ -110,7 +111,7 @@ Food * foodFactory(const Json::Value attributes)
     const int refillQuantity = attributes["refillQuantity"].asInt();
     int initialQuantity = attributes["initialQuantity"].asInt();
 
-    Food * fd = new Food(x, y, refillTime, refillQuantity, initialQuantity);
+    Food * fd = new Food(x, y, refillTime, refillQuantity, initialQuantity, worldP);
 
     return fd;
 
@@ -131,4 +132,10 @@ Tile * tileFactory(int x, int y, int nAnts)
 {
     Tile * t = new Tile(x, y, nAnts);
     return t;
+}
+
+double dist(int x1, int y1, int x2, int y2)
+{
+    double d = sqrt(pow((x1-x2),2)+pow((y1-y2),2));
+    return d;
 }

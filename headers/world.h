@@ -44,7 +44,6 @@ public:
     O vetor World::m_grid precisa de uma conversão diferente.
     */
     int posToInt(int posx, int posy);
-    int posToIntGrid(int posx, int posy);
 
     /*
     Entidades da simulação
@@ -63,15 +62,13 @@ public:
     /*
     Funções úteis às formiguinhaz
     */
-    // void leavePhero(Ant * ant); 
-
     template <class EntityGrid>
     int getEntityIndex(int posx, int posy, EntityGrid entities)
     {   
         int index = -1;
         for (auto it = entities.begin() ; it != entities.end(); ++it)
         {   
-            index ++;
+            index++;
             if(it->getx() == posx && it->gety() == posy)
             {
                 break;
@@ -96,8 +93,6 @@ private:
     */
     std::vector<char> m_grid;
 
-
-
     /*
     Leitura dos dados necessários à execução do programa
     */
@@ -110,7 +105,6 @@ private:
     void addAntsAndHills();
     void addFoods();
 
-
     /*
     Funções para exibição do mapa
     */
@@ -118,11 +112,4 @@ private:
     
     template <class ListOrVector>
     void addEntitiesToGrid(ListOrVector entities);
-
-    
-
-    /*
-    Funções de update para o próximo tick
-    */
-    void updateAnt();
 };
