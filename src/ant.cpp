@@ -4,7 +4,21 @@
 #include "world.h"
 #include "food.h"
 
-#include <vector>
+
+// Philosophers dinner stuff
+const int NOT_EATING = 0;
+const int HUNGRY = 1;
+const int EATING = 2;
+
+int left(int i, int N)
+{
+    return (i + N - 1) % N;
+}
+
+int right(int i, int N)
+{
+    return (i + 1) % N;
+}
 
 
 char Ant::getMarker()
@@ -62,28 +76,88 @@ void Ant::checkFood()
         Food * food = worldP->m_foods[foodIndex];
         if (food->currentFood > 0 && mode == seek)
         {
-            if (hasSeat(food))
+            getFood(food);
+        }
+    }
+}
+
+void Ant::getFood(Food * food)
+{
+    if (hasSeat(food))
+    {
+        int seat = takeSeat(food);
+        // Philosophers dinner
+        philosopher(seat, food);
+        food->seatsAvailable.release();
+    } else {
+        takeGuard();
+    }
+}
+
+bool Ant::hasSeat(Food * food)
+{
+    return food->seatsAvailable.try_acquire();
+}
+
+int Ant::takeSeat(Food * food)
+{
+    // There must be a seat
+    while (true)
+    {
+        for (int i = 0; i < food->numSeats; i++)
+        {
+            if (food->seats[i].try_lock())
             {
-                int seat = takeSeat(food);
-                // Philosophers dinner
-            } else {
-                takeGuard();
+                return i;
             }
         }
     }
 }
 
-int Ant::takeSeat(Food * food)
+void Ant::philosopher(int i, Food * food)
 {
-    for (int i = 0; i < food->numSeats; i++)
-    {
-        if (food->seats[i].try_lock())
-        {
-            return i;
-        }
-    }
-    return -1; // This should NOT happen
+    takeForks(i, food);
+    eat(food);
+    putForks(i, food);
 }
+
+void Ant::takeForks(int i, Food * food)
+{
+    food->m.lock();
+    food->state[i] = HUNGRY;
+    test(i, food);
+    food->m.unlock();
+    food->s[i].lock();
+}
+
+void Ant::putForks(int i, Food * food)
+{
+    int N = food->numSeats;
+    food->m.lock();
+    food->state[i] = NOT_EATING;
+    test(left(i, N), food);
+    test(right(i, N), food);
+    food->m.unlock();
+}
+
+void Ant::test(int i, Food * food)
+{
+    int N = food->numSeats;
+    if (food->state[i] == HUNGRY
+     && food->state[left(i, N)] != EATING
+     && food->state[right(i, N)] != EATING)
+    {
+        food->state[i] = EATING;
+        food->s[i].unlock();
+    }
+}
+
+void Ant::eat(Food * food)
+{
+    food->decreaseFoodCount();
+    mode = bring;
+}
+
 
 
 void Ant::checkAnthill()

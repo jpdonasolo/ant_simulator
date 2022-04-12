@@ -25,12 +25,16 @@ public:
 
     // Food related stuff
     void checkFood();
-    bool hasSeat(Food * food) { return food->seatsAvailable.try_acquire(); }
-    int takeSeat(Food * food);
-    bool requestSticks(Food * food);
-    bool requestStick(Food * food);
-    void eat(Food * food);
+    void getFood(Food * food);
     void takeGuard() {};
+    // philosophers dinner
+    bool hasSeat(Food * food);
+    int takeSeat(Food * food);
+    void philosopher(int i, Food * food);
+    void takeForks(int i, Food * food);
+    void putForks(int i, Food * food);
+    void test(int i, Food * food);
+    void eat(Food * food);
 
     void checkAnthill();
     bool checkInvalidCoordinates(int posx, int posy);

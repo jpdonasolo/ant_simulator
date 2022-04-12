@@ -4,12 +4,12 @@
 #include "semaphore.h"
 
 #include <mutex>
-#include <vector>
-
+#include <algorithm> // max function
 
 class Food : public Entity {
 public:
     Food(int x, int y, int rt, int qt, int iq, const int numSticks)
+        // numSeats = numSticks = number of ants in food source
         : Entity(x, y)
         , refillTime(rt)
         , refillQuantity(qt)
@@ -20,14 +20,22 @@ public:
         {
             std::mutex sticks[numSticks];
             std::mutex seats[numSticks];
+            std::mutex s[numSticks];
+            int state[numSticks];
         }
 
     int getRefillTime() const { return refillTime; };
     int getRefillQuantity() const { return refillQuantity; };
+    void decreaseFoodCount()
+    {
+        std::lock_guard<std::mutex> lck(foodCounterMutex);
+        currentFood = std::max(0, currentFood-1);
+    }
 
     char getMarker() { return 'F'; }
     
     int currentTime;
+    std::mutex foodCounterMutex;
     int currentFood;
     const int numSeats;
 
@@ -40,7 +48,12 @@ public:
 
     // ants use two sticks to eat, but they must aquire each
     // one of them individually
-    std::mutex * sticks;
+    std::mutex * sticks; // array
+
+    // variables for philosophers dinner solution
+    int * state;
+    std::mutex * s;
+    std::mutex m;
 
 private:
     const int refillTime;
