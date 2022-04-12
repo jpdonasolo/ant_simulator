@@ -21,6 +21,7 @@
 #include "utils.h"
 
 
+
 void World::setup()
 {
     config = readJson();
@@ -30,8 +31,6 @@ void World::setup()
     setupChart();
     addAntsAndHills();
     addFoods();
-    
-    setupThreads();
 }
 
 Json::Value World::readJson()
@@ -48,25 +47,6 @@ Json::Value World::readJson()
 
     return configData;
     
-}
-
-void World::setupThreads()
-{
-    const int nThreads = config["nThreads"].asInt();
-    int curThread = nThreads;
-
-    while (curThread--)
-    {       
-        // TEMPORARIO PARA TESTAR THREADS
-        // https://stackoverflow.com/questions/10673585/start-thread-with-member-function
-        m_threads.push_back(new std::thread(&World::update, this));
-    }    
-
-    for(std::thread * t : m_threads)
-    { 
-        t->join();
-        delete t;
-    }
 }
 
 void World::setupChart()
@@ -215,49 +195,27 @@ void World::addEntitiesToGrid(ListOrVector entities, std::vector<std::string> & 
 
 void World::update()
 {   
-    /* Ordem de Updates
-     *
-     * Pheromones
-     * Ants
-     * Food
-     * AntHill (?)
-     *
-     * Cada uma dessas classes deve ter um método `update`, que irá
-     * utilizar outros métodos para fazer a entidade cumprir seu papel
-     * naquele turno.
-     *
-     * Esses outros métodos devem implementar mecanismos de controle
-     * para evitar uma condição de corrida.
-     *
-     * Como fazer o mecanismo de controle dos Tiles?
-     *
-     * Deve acontecer uma sincronização após o update de cada tipo de
-     * objeto.
-     */
-    while(true)
+    
+    FlowController fg;
+    fg.setMax(m_pheromones.size());
+    updateEntities(fg, m_pheromones);
+
+    std::vector<Pheromone*> nPhero;
+    for (auto phero : m_pheromones)
     {
-        // update pheromones
-        auto pheroIt = m_pheromones.begin();
-        while (pheroIt != m_pheromones.end()) 
+        if (phero->remainingLife != 0)
         {
-            // pheroIt is increased inside update function
-            (*pheroIt)->update(pheroIt);
+            nPhero.push_back(phero);
         }
+    }
 
-        // update ants
-        for (Ant * ant : m_ants)
-        {   
-            ant->update();
-        }
+    fg.reset();
+    fg.setMax(m_ants.size());
+    updateEntities(fg, m_ants);
 
-        // update food
-        for (Food * food : m_foods)
-        {
-            food->update();
-        }
+    fg.reset();
+    fg.setMax(m_foods.size());
+    updateEntities(fg, m_foods);
 
-        std::this_thread::sleep_for(std::chrono::milliseconds(200));
-        print();
-    }      
     return;
 }

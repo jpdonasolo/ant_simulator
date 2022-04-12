@@ -23,7 +23,7 @@ public:
     }
     int getIndex() { return indAnthill; }
     std::string getColor(){ return color(getIndex()%TOTALCOLORS); }
-    void update(std::list<Pheromone*>::iterator&);
+    void update();
     
     int remainingLife;
 private:
