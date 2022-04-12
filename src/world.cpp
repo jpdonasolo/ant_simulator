@@ -196,9 +196,9 @@ void World::addEntitiesToGrid(ListOrVector entities, std::vector<std::string> & 
 void World::update()
 {   
     
-    FlowController fg;
-    fg.setMax(m_pheromones.size());
-    updateEntities(fg, m_pheromones);
+    FlowController fc;
+    fc.setMax(m_pheromones.size());
+    updateEntities(fc, m_pheromones);
 
     std::vector<Pheromone*> nPhero;
     for (auto phero : m_pheromones)
@@ -209,13 +209,13 @@ void World::update()
         }
     }
 
-    fg.reset();
-    fg.setMax(m_ants.size());
-    updateEntities(fg, m_ants);
+    fc.reset();
+    fc.setMax(m_ants.size());
+    updateEntities(fc, m_ants);
 
-    fg.reset();
-    fg.setMax(m_foods.size());
-    updateEntities(fg, m_foods);
+    fc.reset();
+    fc.setMax(m_foods.size());
+    updateEntities(fc, m_foods);
 
     return;
 }
