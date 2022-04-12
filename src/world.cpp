@@ -261,3 +261,17 @@ void World::update()
     }      
     return;
 }
+
+template <class EntityGrid>
+int World::getEntityIndex(int posx, int posy, EntityGrid entities){
+    int index = -1;
+    for (auto it = entities.begin() ; it != entities.end(); ++it)
+    {   
+        index ++;
+        if((*it)->getx() == posx && (*it)->gety() == posy)
+        {
+            break;
+        }
+    }
+    return index;
+}
