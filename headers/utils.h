@@ -41,7 +41,7 @@ public:
     
     void reset();
     int next();
-    void setMax(int max) { max = max; };
+    void setMax(int m) { max = m; };
 
 private:
     int max;

@@ -209,17 +209,13 @@ void World::update()
         }
     }
 
-    // update ants
-    for (Ant * ant : m_ants)
-    {   
-        ant->update();
-    }
+    fg.reset();
+    fg.setMax(m_ants.size());
+    updateEntities(fg, m_ants);
 
-    // update food
-    for (Food * food : m_foods)
-    {
-        food->update();
-    }
+    fg.reset();
+    fg.setMax(m_foods.size());
+    updateEntities(fg, m_foods);
 
     return;
 }

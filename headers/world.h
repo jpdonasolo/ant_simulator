@@ -50,7 +50,7 @@ public:
     std::vector<Tile*> m_chart;
     std::vector<Anthill*> m_anthills;
     std::vector<Food*> m_foods; // To be able to work with mutex array
-    std::list<Ant*> m_ants;
+    std::vector<Ant*> m_ants;
     std::vector<Pheromone*> m_pheromones;
 
     /*
@@ -107,12 +107,15 @@ private:
     /*
     Funções de update
     */
-   template <class EntityType>
-   void updateEntities(FlowController & fg, EntityType entities);
+//    template <class EntityType>
+//    void updateEntities(FlowController & fc, EntityType & entities);
+
+    template <class EntityType>
+    void updateEntities(FlowController & fc, EntityType & entities);
 };
 
 template <class EntityType>
-void World::updateEntities(FlowController & fg, EntityType entities)
+void World::updateEntities(FlowController & fc, EntityType & entities)
 {
 
     int idx;
@@ -121,7 +124,7 @@ void World::updateEntities(FlowController & fg, EntityType entities)
     {
         try
         {
-            idx = fg.next();
+            idx = fc.next();
             entities[idx]->update();
         }
         catch (const MaxEntitiesReached & e)
