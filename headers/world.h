@@ -79,13 +79,6 @@ public:
     int getWidth() { return config["width"].asInt(); }
 private:
 
-
-    /*
-    Threads
-    */
-    std::vector<std::thread *> m_threads;
-    void setupThreads();
-
     /*
     Grid para exibição do mapa
     */
