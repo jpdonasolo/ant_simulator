@@ -5,6 +5,7 @@
 
 #include <mutex>
 #include <algorithm> // max function
+#include <iostream>
 
 class World;
 
@@ -20,11 +21,12 @@ public:
         , currentTime(rt)
         , numSeats(numSticks)
         , seatsAvailable(numSticks)
+        , worldP(WorldPtr)
         {
-            std::mutex sticks[numSticks];
-            std::mutex seats[numSticks];
-            std::mutex s[numSticks];
-            int state[numSticks];
+            sticks = new std::mutex[numSticks];
+            seats = new std::mutex[numSticks];
+            s = new std::mutex[numSticks];
+            state = new int[numSticks];
         }
 
     int getRefillTime() const { return refillTime; };
