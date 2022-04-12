@@ -62,7 +62,18 @@ public:
     Funções úteis às formiguinhaz
     */
     template <class EntityGrid>
-    int getEntityIndex(int posx, int posy, EntityGrid entities);
+    int getEntityIndex(int posx, int posy, EntityGrid entities){
+    int index = -1;
+    for (auto it = entities.begin() ; it != entities.end(); ++it)
+    {   
+        index ++;
+        if((*it)->getx() == posx && (*it)->gety() == posy)
+        {
+            break;
+        }
+    }
+    return index;
+}
 
     int getHeight() { return config["height"].asInt(); }
     int getWidth() { return config["width"].asInt(); }
