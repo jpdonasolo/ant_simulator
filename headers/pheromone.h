@@ -19,7 +19,7 @@ public:
         return 'P';
     }
     int getIndex() { return indAnthill; }
-    void update(std::list<Pheromone>::iterator&);
+    void update(std::list<Pheromone*>::iterator&);
     
     int remainingLife;
 private:

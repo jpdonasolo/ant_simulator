@@ -1,7 +1,7 @@
 #include "pheromone.h"
 #include "world.h"
 
-void Pheromone::update(std::list<Pheromone>::iterator & it)
+void Pheromone::update(std::list<Pheromone*>::iterator & it)
 {
     remainingLife--;
     if (remainingLife == 0)

@@ -49,11 +49,11 @@ public:
     /*
     Entidades da simulação
     */
-    std::vector<Tile> m_chart;
-    std::vector<Anthill> m_anthills;
-    std::vector<Food> m_foods;
-    std::list<Ant> m_ants;
-    std::list<Pheromone> m_pheromones;
+    std::vector<Tile*> m_chart;
+    std::vector<Anthill*> m_anthills;
+    std::vector<Food*> m_foods; // To be able to work with mutex array
+    std::list<Ant*> m_ants;
+    std::list<Pheromone*> m_pheromones;
 
     /*
     Metadados da simulação - LIDOS DO JSON
@@ -72,7 +72,7 @@ public:
         for (auto it = entities.begin() ; it != entities.end(); ++it)
         {   
             index ++;
-            if(it->getx() == posx && it->gety() == posy)
+            if((*it)->getx() == posx && (*it)->gety() == posy)
             {
                 break;
             }

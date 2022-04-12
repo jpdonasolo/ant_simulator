@@ -81,7 +81,7 @@ void World::setupChart()
         for(int j=0; j<width; j++)
         {
             Tile * tilePointer = tileFactory(j, i, nAnts);
-            m_chart.push_back(*(tilePointer));
+            m_chart.push_back(tilePointer);
         }
     }
 }
@@ -117,16 +117,16 @@ void World::addAntsAndHills()
     for (Json::Value anthillInfo : anthillsInfo)
     {
         Anthill * ah = anthillFactory(anthillInfo, anthillIndex);
-        m_anthills.push_back(*(ah));
+        m_anthills.push_back(ah);
 
-        Tile * anthillTile = &(m_chart[posToInt((*ah).getx(),(*ah).gety())]);
+        Tile * anthillTile = m_chart[posToInt((*ah).getx(),(*ah).gety())];
         anthillTile->isAnthill = true;
 
         for(int i = 0; i < ah->getPopu(); i++){
             Ant * ant = new Ant(ah->getx(), ah->gety(), anthillIndex, this);
             int uniform[4] = {1,1,1,1};
             ant->face = randDir(uniform);
-            m_ants.push_back(*(ant));
+            m_ants.push_back(ant);
         }
 
         ++anthillIndex;
@@ -140,9 +140,9 @@ void World::addFoods()
     for (Json::Value foodInfo : foodsInfo)
     {
         Food * fd = foodFactory(foodInfo);
-        m_foods.push_back(*(fd));
+        m_foods.push_back(fd);
 
-        Tile * foodTile = &(m_chart[posToInt((*fd).getx(),(*fd).gety())]);
+        Tile * foodTile = m_chart[posToInt(fd->getx(),fd->gety())];
         foodTile->isFood = true;
     }
 }
@@ -186,7 +186,7 @@ void World::addEntitiesToGrid(ListOrVector entities)
 {   
     for (auto it = entities.begin() ; it != entities.end(); ++it)
     {   
-        m_grid[(it->getx() + 1) + (getWidth() + 2)*(it->gety()+1)] = it->getMarker();
+        m_grid[((*it)->getx() + 1) + (getWidth() + 2)*((*it)->gety()+1)] = (*it)->getMarker();
     }
 }
 
@@ -227,13 +227,13 @@ void World::update()
         while (pheroIt != m_pheromones.end()) 
         {
             // pheroIt is increased inside update function
-            pheroIt->update(pheroIt);
+            (*pheroIt)->update(pheroIt);
         }
 
         // update ants
-        for (Ant & ant : m_ants)
+        for (Ant * ant : m_ants)
         {   
-            ant.update();
+            ant->update();
         }
 
         // TEMPORARIO PARA TESTAR THREADS
