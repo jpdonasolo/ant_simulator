@@ -55,23 +55,27 @@ void World::setupSDL()
     SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
 
 
-    SDL_Surface * antSurface = SDL_LoadBMP("ant.bmp");
+    SDL_Surface * antSurface = SDL_LoadBMP("img/ant.bmp");
     antTexture = SDL_CreateTextureFromSurface(renderer, antSurface);
     SDL_FreeSurface(antSurface);
 
-    SDL_Surface * foodSurface = SDL_LoadBMP("food.bmp");
+    SDL_Surface * ant2Surface = SDL_LoadBMP("img/ant2.bmp");
+    ant2Texture = SDL_CreateTextureFromSurface(renderer, ant2Surface);
+    SDL_FreeSurface(ant2Surface);
+
+    SDL_Surface * foodSurface = SDL_LoadBMP("img/food.bmp");
     foodTexture = SDL_CreateTextureFromSurface(renderer, foodSurface);
     SDL_FreeSurface(foodSurface);
 
-    SDL_Surface * foodySurface = SDL_LoadBMP("foody.bmp");
+    SDL_Surface * foodySurface = SDL_LoadBMP("img/foody.bmp");
     foodyTexture = SDL_CreateTextureFromSurface(renderer, foodySurface);
     SDL_FreeSurface(foodySurface);
 
-    SDL_Surface * notFoodSurface = SDL_LoadBMP("notFood.bmp");
+    SDL_Surface * notFoodSurface = SDL_LoadBMP("img/notFood.bmp");
     notFoodTexture = SDL_CreateTextureFromSurface(renderer, notFoodSurface);
     SDL_FreeSurface(notFoodSurface);
 
-    SDL_Surface * anthillSurface = SDL_LoadBMP("anthill.bmp");
+    SDL_Surface * anthillSurface = SDL_LoadBMP("img/anthill.bmp");
     anthillTexture = SDL_CreateTextureFromSurface(renderer, anthillSurface);
     SDL_FreeSurface(anthillSurface);
 
@@ -92,37 +96,89 @@ void World::draw()
         for (int y = 0; y < h; y++)
         {
             SDL_Rect rect = {(x + (y%2)) * ss, y * ss, ss, ss};
-            SDL_RenderFillRect(renderer, &rect);
+            SDL_RenderDrawRect(renderer, &rect);
         }
     }
-    /*for (Anthill * i : m_anthills)
-    {
-        int hx = i->getx();
-        int hy = i->gety();
-        SDL_SetRenderDrawColor(renderer, 75, 55, 35, 255);
-        SDL_Rect rect = {hx * ss, hy * ss, ss, ss};
-        SDL_RenderFillRect(renderer, &rect);
-    }*/
 
     for (Pheromone * i : m_pheromones)
     {
-        int px = i->getx();
-        int py = i->gety();
         SDL_SetRenderDrawColor(renderer, 0, 200, 0, 30);
-        SDL_Rect rect = {px * ss, py * ss, ss, ss};
+        SDL_Rect rect = {i->getx() * ss, i->gety() * ss, ss, ss};
         SDL_RenderFillRect(renderer, &rect);
     }
 
     for (Ant * i : m_ants)
     {
         const int * c = colors[i->getAnthillIndex() % totalColors];
+        int f = i->face;
+        int m = i->mode;
         SDL_SetTextureColorMod(antTexture, c[0], c[1], c[2]);
-        SDL_SetTextureAlphaMod(antTexture, 100);
-        SDL_Rect rect = {i->getx() * ss, i->gety() * ss, ss, ss};
-        SDL_RenderCopy(renderer, antTexture, NULL, &rect);
-        if (i->mode == bring)
+        SDL_SetTextureAlphaMod(antTexture, 120);
+
+        if (f == north)
         {
-            SDL_RenderCopy(renderer, foodyTexture, NULL, &rect);
+            if (m == bring)
+            {
+                SDL_Rect rect = {i->getx() * ss + ss/2, i->gety() * ss + ss/2, ss/2, ss/2};
+                SDL_RenderCopyEx(renderer, antTexture, NULL, &rect, 90, NULL, SDL_FLIP_NONE);
+                SDL_RenderCopyEx(renderer, foodyTexture, NULL, &rect, 90, NULL, SDL_FLIP_NONE);
+            }
+            else
+            {
+                SDL_Rect rect = {i->getx() * ss, i->gety() * ss + ss/2, ss/2, ss/2};
+                SDL_RenderCopyEx(renderer, antTexture, NULL, &rect, 90, NULL, SDL_FLIP_NONE);
+            }
+        }
+        else
+        {
+        if (f == east)
+        {
+            if (m == bring)
+            {
+                SDL_Rect rect = {i->getx() * ss, i->gety() * ss, ss/2, ss/2};
+                SDL_RenderCopyEx(renderer, antTexture, NULL, &rect, 0, NULL, SDL_FLIP_HORIZONTAL);
+                SDL_RenderCopyEx(renderer, foodyTexture, NULL, &rect, 0, NULL, SDL_FLIP_HORIZONTAL);
+            }
+            else
+            {
+                SDL_Rect rect = {i->getx() * ss, i->gety() * ss + ss/2, ss/2, ss/2};
+                SDL_RenderCopyEx(renderer, antTexture, NULL, &rect, 0, NULL, SDL_FLIP_HORIZONTAL);
+            }
+        }
+        else
+        {
+        if (f == south)
+        {
+            if (m == bring)
+            {
+                SDL_Rect rect = {i->getx() * ss + ss/2, i->gety() * ss, ss/2, ss/2};
+                SDL_RenderCopyEx(renderer, antTexture, NULL, &rect, 90, NULL, SDL_FLIP_HORIZONTAL);
+                SDL_RenderCopyEx(renderer, foodyTexture, NULL, &rect, 90, NULL, SDL_FLIP_HORIZONTAL);
+            }
+            else
+            {
+                SDL_Rect rect = {i->getx() * ss, i->gety() * ss, ss/2, ss/2};
+                SDL_RenderCopyEx(renderer, antTexture, NULL, &rect, 90, NULL, SDL_FLIP_HORIZONTAL);
+            }
+        }
+        else
+        {
+        if (f == west)
+        {
+            if (m == bring)
+            {
+                SDL_Rect rect = {i->getx() * ss + ss/2, i->gety() * ss, ss/2, ss/2};
+                SDL_RenderCopyEx(renderer, antTexture, NULL, &rect, 0, NULL, SDL_FLIP_NONE);
+                SDL_RenderCopyEx(renderer, foodyTexture, NULL, &rect, 0, NULL, SDL_FLIP_NONE);
+            }
+            else
+            {
+                SDL_Rect rect = {i->getx() * ss + ss/2, i->gety() * ss + ss/2, ss/2, ss/2};
+                SDL_RenderCopyEx(renderer, antTexture, NULL, &rect, 0, NULL, SDL_FLIP_NONE);
+            }
+        }
+        }
+        }
         }
     }
     
@@ -136,15 +192,13 @@ void World::draw()
     
     for (Food * i : m_foods)
     {
-        int fx = i->getx();
-        int fy = i->gety();
-        int cr = i->currentFood;
-        if (cr == 0)
+        if (i->currentFood == 0)
         {
-            SDL_Rect rect = {fx * ss, fy * ss, ss, ss};
+            SDL_Rect rect = {i->getx() * ss, i->gety() * ss, ss, ss};
             SDL_RenderCopy(renderer, notFoodTexture, NULL, &rect);
-        }else{
-            SDL_Rect rect = {fx * ss, fy * ss, ss, ss};
+        }
+        else{
+            SDL_Rect rect = {i->getx() * ss, i->gety() * ss, ss, ss};
             SDL_RenderCopy(renderer, foodTexture, NULL, &rect);
         }
     }
