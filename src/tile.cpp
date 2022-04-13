@@ -9,5 +9,5 @@ void Tile::decreasePheroLife(int pheroIdx)
 void Tile::increasePheroLife(int pheroIdx)
 {
     std::lock_guard<std::mutex> lg(m);
-    pheroList[pheroIdx]--;
+    pheroList[pheroIdx]++;
 }
