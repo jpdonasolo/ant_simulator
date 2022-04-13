@@ -25,13 +25,102 @@ void World::setup()
 {
     config = readJson();
 
+    setupSDL();
     setupGrid();
 
     setupChart();
     addAntsAndHills();
     addFoods();
     
-    setupThreads();
+    update();
+    //setupThreads();
+}
+
+void World::setupSDL()
+{
+    SDL_Init(SDL_INIT_VIDEO);
+    int w = getWidth() * getSquareSize();
+    int h = getHeight() * getSquareSize();
+    window = SDL_CreateWindow("FormiguinhaZ",SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED,w,h,0);
+    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_PRESENTVSYNC);
+    SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
+
+
+    SDL_Surface * antSurface = SDL_LoadBMP("ant.bmp");
+    antTexture = SDL_CreateTextureFromSurface(renderer, antSurface);
+    SDL_FreeSurface(antSurface);
+
+    SDL_Surface * foodSurface = SDL_LoadBMP("food.bmp");
+    foodTexture = SDL_CreateTextureFromSurface(renderer, foodSurface);
+    SDL_FreeSurface(foodSurface);
+
+    SDL_RenderClear(renderer);
+	SDL_RenderPresent(renderer);
+}
+
+void World::draw()
+{
+    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+    SDL_RenderClear(renderer);
+    int w = getWidth();
+    int h = getHeight();
+    int ss = getSquareSize();
+    SDL_SetRenderDrawColor(renderer, 240, 240, 240, 255);
+    for (int x = 0; x < w; x+=2)
+    {
+        for (int y = 0; y < h; y++)
+        {
+            SDL_Rect rect = {(x + (y%2)) * ss, y * ss, ss, ss};
+            SDL_RenderFillRect(renderer, &rect);
+        }
+    }
+    for (Anthill * i : m_anthills)
+    {
+        int hx = i->getx();
+        int hy = i->gety();
+        SDL_SetRenderDrawColor(renderer, 75, 55, 35, 255);
+        SDL_Rect rect = {hx * ss, hy * ss, ss, ss};
+        SDL_RenderFillRect(renderer, &rect);
+    }
+
+    for (Pheromone * i : m_pheromones)
+    {
+        int px = i->getx();
+        int py = i->gety();
+        SDL_SetRenderDrawColor(renderer, 0, 200, 0, 30);
+        SDL_Rect rect = {px * ss, py * ss, ss, ss};
+        SDL_RenderFillRect(renderer, &rect);
+    }
+
+    for (Ant * i : m_ants){
+        int ax = i->getx();
+        int ay = i->gety();
+        SDL_SetTextureColorMod(antTexture, 0, 0, 0);
+        SDL_SetTextureAlphaMod(antTexture, 100);
+        SDL_Rect rect = {ax * ss, ay * ss, ss, ss};
+        // SDL_RenderFillRect(renderer, &rect);
+        SDL_RenderCopy(renderer, antTexture, NULL, &rect);
+    }
+    
+    for (Anthill * i : m_anthills)
+    {
+        int hx = i->getx();
+        int hy = i->gety();
+        SDL_SetRenderDrawColor(renderer, 75, 55, 35, 255);
+        SDL_Rect rect = {hx * ss, hy * ss, ss, ss};
+        SDL_RenderFillRect(renderer, &rect);
+    }
+    
+    for (Food * i : m_foods)
+    {
+        int fx = i->getx();
+        int fy = i->gety();
+        SDL_Rect rect = {fx * ss, fy * ss, ss, ss};
+        // SDL_RenderFillRect(renderer, &rect);
+        SDL_RenderCopy(renderer, foodTexture, NULL, &rect);
+    }
+
+    SDL_RenderPresent(renderer);
 }
 
 Json::Value World::readJson()
@@ -60,10 +149,11 @@ void World::setupThreads()
         // TEMPORARIO PARA TESTAR THREADS
         // https://stackoverflow.com/questions/10673585/start-thread-with-member-function
         m_threads.push_back(new std::thread(&World::update, this));
-    }    
+    }
 
     for(std::thread * t : m_threads)
     { 
+
         t->join();
         delete t;
     }
@@ -234,8 +324,23 @@ void World::update()
      * Deve acontecer uma sincronização após o update de cada tipo de
      * objeto.
      */
-    while(true)
+
+    bool running = true;
+	SDL_Event event;
+
+    while(running)
     {
+        // Primaki
+        // capture event in the window
+        while(SDL_PollEvent(&event)){
+            if(event.type == SDL_QUIT)
+				running = false;
+
+            if(event.type == SDL_MOUSEBUTTONUP)
+            {
+                std::cout << "Pause\n";
+            }
+        }
         // update pheromones
         auto pheroIt = m_pheromones.begin();
         while (pheroIt != m_pheromones.end()) 
@@ -256,8 +361,17 @@ void World::update()
             food->update();
         }
 
-        std::this_thread::sleep_for(std::chrono::milliseconds(200));
-        print();
+        std::this_thread::sleep_for(std::chrono::milliseconds(50));
+        // print();
+        draw();
     }      
     return;
+}
+
+// Primaki
+World::~World()
+{
+    SDL_DestroyRenderer(renderer);
+	SDL_DestroyWindow(window);
+	SDL_Quit();
 }

@@ -8,6 +8,9 @@
 #include <iterator>
 #include <list>
 
+// Primaki
+#include <SDL2/SDL.h>
+
 // https://www.codeproject.com/articles/1102603/accessing-json-data-with-cplusplus
 #include <jsoncpp/json/value.h>
 #include <jsoncpp/json/reader.h>
@@ -29,7 +32,7 @@ class World{
 public:
     
     World(){};
-    ~World(){};
+    ~World();
 
     void print();
     void setup();
@@ -77,8 +80,8 @@ public:
 
     int getHeight() { return config["height"].asInt(); }
     int getWidth() { return config["width"].asInt(); }
+    int getSquareSize() { return config["squareSize"].asInt(); }
 private:
-
 
     /*
     Threads
@@ -90,6 +93,17 @@ private:
     Grid para exibição do mapa
     */
     std::vector<char> m_grid_base;
+
+    /* Primaki
+    SDL da exibição do mapa
+    */
+    SDL_Window * window;
+    SDL_Renderer * renderer;
+    SDL_Texture * antTexture;
+    SDL_Texture * foodTexture;
+    SDL_Texture * anthillTexture;
+    void setupSDL();
+    void draw();
 
     /*
     Leitura dos dados necessários à execução do programa
