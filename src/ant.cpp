@@ -36,15 +36,15 @@ void Ant::lookTo(int x, int y)
     {
         weight[0] = 1;
     }
-    if (x > posx)
+    else if (x > posx)
     {
         weight[1] = 1;
     }
-    if (y > posy)
+    else if (y > posy)
     {
         weight[2] = 1;
     }
-    if (x < posx)
+    else if (x < posx)
     {
         weight[3] = 1;
     }
@@ -315,7 +315,7 @@ void Ant::walk()
 {   
     int uniformWeightN[4] = {0, 1, 1, 1};
     int uniformWeightE[4] = {1, 0, 1, 1};
-    int uniformWeightS[4] = {1, 0, 0, 0};
+    int uniformWeightS[4] = {1, 1, 0, 1};
     int uniformWeightW[4] = {1, 1, 1, 0};
     switch(face)
     {
