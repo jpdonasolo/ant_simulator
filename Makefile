@@ -2,7 +2,7 @@ CXXFLAGS += -Iheaders -O2 -ljsoncpp -pthread -g
 # CXXFLAGS += -Wall
 
 HEADERS = ant.h pheromone.h utils.h world.h entity.h semaphore.h tile.h
-OBJECTS = ant.o pheromone.o utils.o world.o food.o
+OBJECTS = ant.o pheromone.o utils.o world.o food.o tile.o
 
 .PHONY: all
 all: main
