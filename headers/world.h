@@ -62,21 +62,12 @@ public:
     Funções úteis às formiguinhaz
     */
     template <class EntityGrid>
-    int getEntityIndex(int posx, int posy, EntityGrid entities){
-    int index = -1;
-    for (auto it = entities.begin() ; it != entities.end(); ++it)
-    {   
-        index ++;
-        if((*it)->getx() == posx && (*it)->gety() == posy)
-        {
-            break;
-        }
-    }
-    return index;
-}
+    int getEntityIndex(int posx, int posy, EntityGrid entities);
 
     int getHeight() { return config["height"].asInt(); }
     int getWidth() { return config["width"].asInt(); }
+
+    void addPheromone(Pheromone * pheromone);
 private:
 
     /*
@@ -111,6 +102,11 @@ private:
     void updateEntities(FlowController & fc, std::vector<EntityType> & entities);
     template <class EntityType>
     void updateWithThreads(std::vector<EntityType> & entities);
+
+    /*
+    Mutexes
+    */
+   std::mutex mutex_phero;
 };
 
 template <class EntityType>
@@ -155,4 +151,18 @@ void World::updateWithThreads(std::vector<EntityType> & entities)
         thread->join();
         delete thread;
     }
+}
+
+template <class EntityGrid>
+int World::getEntityIndex(int posx, int posy, EntityGrid entities){
+    int index = -1;
+    for (auto it = entities.begin() ; it != entities.end(); ++it)
+    {   
+        index ++;
+        if((*it)->getx() == posx && (*it)->gety() == posy)
+        {
+            break;
+        }
+    }
+    return index;
 }

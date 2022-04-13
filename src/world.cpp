@@ -209,3 +209,10 @@ void World::update()
 
     return;
 }
+
+
+void World::addPheromone(Pheromone * phero)
+{
+    std::lock_guard<std::mutex> lg(mutex_phero);
+    m_pheromones.push_back(phero);
+}

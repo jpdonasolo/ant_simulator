@@ -56,8 +56,8 @@ void Ant::leavePhero()
 {
     Pheromone * phero = new Pheromone(getx(), gety(), getAnthillIndex(), worldP->config["pheroLifetime"].asInt(), worldP);
     Tile * pheroTile = worldP->m_chart[worldP->posToInt(getx(), gety())];
-    pheroTile->pheroList[getAnthillIndex()]++;
-    worldP->m_pheromones.push_back(phero);
+    pheroTile->increasePheroLife(getAnthillIndex());
+    worldP->addPheromone(phero);
 }
 
 
