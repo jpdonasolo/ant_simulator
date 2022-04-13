@@ -2,8 +2,8 @@
     "nThreads": 1,
     "height": 30,
     "width": 30,
-    "vision": 5,
-    "pheroLifetime": 20,
+    "vision": 4,
+    "pheroLifetime": 200,
     "anthills": [
         {
             "x": 0,
@@ -18,7 +18,7 @@
         {
             "x": 0,
             "y": 9,
-            "nAnts": 2
+            "nAnts": 20
         }
     ],
     "foods": [

@@ -195,7 +195,6 @@ void World::addEntitiesToGrid(ListOrVector entities, std::vector<std::string> & 
 
 void World::update()
 {   
-    
     FlowController fc;
     fc.setMax(m_pheromones.size());
     updateEntities(fc, m_pheromones);
@@ -203,11 +202,9 @@ void World::update()
     std::vector<Pheromone*> nPhero;
     for (auto phero : m_pheromones)
     {
-        if (phero->remainingLife != 0)
-        {
-            nPhero.push_back(phero);
-        }
+        if (!(phero->toRemove)){ nPhero.push_back(phero); }
     }
+    m_pheromones = nPhero;
 
     fc.reset();
     fc.setMax(m_ants.size());

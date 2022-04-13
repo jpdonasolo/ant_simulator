@@ -26,6 +26,7 @@ public:
     void update();
     
     int remainingLife;
+    bool toRemove = false;
 private:
     const int baseLifetime;
     const int indAnthill;

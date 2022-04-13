@@ -288,8 +288,8 @@ void Ant::look()
 
     // checa se tá bring, direciona formigueiro
     if(mode == bring)
-    {
-       lookTo(worldP->m_anthills[getAnthillIndex()]->getx(), worldP->m_anthills[getAnthillIndex()]->gety());
+    {   
+        lookTo(worldP->m_anthills[getAnthillIndex()]->getx(), worldP->m_anthills[getAnthillIndex()]->gety());
     } else if(foodInSight || maxPhero > 0)
     {
     // caso contrario, checa por tiles com feromonio de comida aos lados, exceto no seu tile
@@ -302,10 +302,10 @@ void Ant::look()
     {
     // caso nenhuma das condicoes anteriores, ande para frente com maior prob doq os lados
         int weight[4];
-        weight[mapDir(face)] = 10;
-        weight[(mapDir(face)+1)%4] = 2;
-        weight[(mapDir(face)-1)%4] = 2;
+        weight[mapDir(face)] = 1;
+        weight[(mapDir(face)+1)%4] = 1;
         weight[(mapDir(face)+2)%4] = 1;
+        weight[(mapDir(face)+3)%4] = 1;
         face = randDir(weight);
     }
 }
@@ -315,7 +315,7 @@ void Ant::walk()
 {   
     int uniformWeightN[4] = {0, 1, 1, 1};
     int uniformWeightE[4] = {1, 0, 1, 1};
-    int uniformWeightS[4] = {1, 1, 0, 1};
+    int uniformWeightS[4] = {1, 0, 0, 0};
     int uniformWeightW[4] = {1, 1, 1, 0};
     switch(face)
     {
@@ -362,7 +362,7 @@ void Ant::walk()
 
 
 void Ant::update()
-{
+{   
     checkFood();
     checkAnthill();
     if (mode == bring){ leavePhero(); }
