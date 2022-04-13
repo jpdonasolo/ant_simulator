@@ -108,11 +108,14 @@ private:
     Funções de update
     */
     template <class EntityType>
-    void updateEntities(FlowController & fc, EntityType & entities);
+    void updateEntities(FlowController & fc, std::vector<EntityType> & entities);
+    template <class EntityType>
+    void updateWithThreads(std::vector<EntityType> & entities);
 };
 
 template <class EntityType>
-void World::updateEntities(FlowController & fc, EntityType & entities)
+void World::updateEntities(FlowController & fc, std::vector<EntityType> & entities)
+
 {
 
     int idx;
@@ -128,5 +131,28 @@ void World::updateEntities(FlowController & fc, EntityType & entities)
         {
             break;
         }
+    }
+}
+
+template <class EntityType>
+void World::updateWithThreads(std::vector<EntityType> & entities)
+{
+
+    FlowController fc;
+    std::vector<std::thread *> threads;
+
+    fc.setMax(entities.size());
+
+    for (int i = 0; i < config["nThreads"].asInt(); i++)
+    {
+        std::thread * thread = new std::thread
+                                ([this, &fc, &entities]{this->updateEntities(fc, entities);});
+        threads.push_back(thread);
+    }
+
+    for (std::thread * thread : threads)
+    {
+        thread->join();
+        delete thread;
     }
 }
