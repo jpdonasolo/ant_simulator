@@ -32,6 +32,7 @@ const int totalColors = 8;
 const int * colors[8] = {black, blue, yellow, cyan, orange, purple, green, redWine};
     
 
+
 void World::setup()
 {
     config = readJson();
@@ -42,9 +43,6 @@ void World::setup()
     setupChart();
     addAntsAndHills();
     addFoods();
-    
-    update();
-    //setupThreads();
 }
 
 void World::setupSDL()
@@ -168,26 +166,6 @@ Json::Value World::readJson()
 
     return configData;
     
-}
-
-void World::setupThreads()
-{
-    const int nThreads = config["nThreads"].asInt();
-    int curThread = nThreads;
-
-    while (curThread--)
-    {       
-        // TEMPORARIO PARA TESTAR THREADS
-        // https://stackoverflow.com/questions/10673585/start-thread-with-member-function
-        m_threads.push_back(new std::thread(&World::update, this));
-    }
-
-    for(std::thread * t : m_threads)
-    { 
-
-        t->join();
-        delete t;
-    }
 }
 
 void World::setupChart()
@@ -336,73 +314,31 @@ void World::addEntitiesToGrid(ListOrVector entities, std::vector<std::string> & 
 
 void World::update()
 {   
-    /* Ordem de Updates
-     *
-     * Pheromones
-     * Ants
-     * Food
-     * AntHill (?)
-     *
-     * Cada uma dessas classes deve ter um método `update`, que irá
-     * utilizar outros métodos para fazer a entidade cumprir seu papel
-     * naquele turno.
-     *
-     * Esses outros métodos devem implementar mecanismos de controle
-     * para evitar uma condição de corrida.
-     *
-     * Como fazer o mecanismo de controle dos Tiles?
-     *
-     * Deve acontecer uma sincronização após o update de cada tipo de
-     * objeto.
-     */
+    updateWithThreads(m_pheromones);
 
-    bool running = true;
-	SDL_Event event;
-
-    while(running)
+    std::vector<Pheromone*> newPhero;
+    for (auto phero : m_pheromones)
     {
-        // Primaki
-        // capture event in the window
-        while(SDL_PollEvent(&event)){
-            if(event.type == SDL_QUIT)
-				running = false;
+        if (!(phero->toRemove)){ newPhero.push_back(phero); }
+    }
+    m_pheromones = newPhero;
 
-            if(event.type == SDL_MOUSEBUTTONUP)
-            {
-                std::cout << "Pause\n";
-            }
-        }
-        // update pheromones
-        auto pheroIt = m_pheromones.begin();
-        while (pheroIt != m_pheromones.end()) 
-        {
-            // pheroIt is increased inside update function
-            (*pheroIt)->update(pheroIt);
-        }
+    updateWithThreads(m_ants);
+    updateWithThreads(m_foods);
 
-        // update ants
-        for (Ant * ant : m_ants)
-        {   
-            ant->update();
-        }
-
-        // update food
-        for (Food * food : m_foods)
-        {
-            food->update();
-        }
-
-        std::this_thread::sleep_for(std::chrono::milliseconds(50));
-        // print();
-        draw();
-    }      
     return;
 }
 
-// Primaki
 World::~World()
 {
     SDL_DestroyRenderer(renderer);
 	SDL_DestroyWindow(window);
 	SDL_Quit();
+    return;
+}
+
+void World::addPheromone(Pheromone * phero)
+{
+    std::lock_guard<std::mutex> lg(mutex_phero);
+    m_pheromones.push_back(phero);
 }

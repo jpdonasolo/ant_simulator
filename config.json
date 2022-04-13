@@ -1,34 +1,34 @@
 {
-    "nThreads": 1,
+    "nThreads": 10,
     "height": 20,
     "width": 20,
     "squareSize": 50,
-    "vision": 5,
-    "pheroLifetime": 20,
+    "vision": 4,
+    "pheroLifetime": 50,
     "anthills": [
         {
             "x": 0,
             "y": 0,
-            "nAnts": 20
+            "nAnts": 10
         },
         {
-            "x": 19,
-            "y": 0,
-            "nAnts": 200
+            "x": 9,
+            "y": 1,
+            "nAnts": 10
         },
         {
-            "x": 19,
-            "y": 19,
-            "nAnts": 20
+            "x": 0,
+            "y": 9,
+            "nAnts": 10
         }
     ],
     "foods": [
         {
-            "x": 0,
-            "y": 19,
-            "initialQuantity": 10,
-            "refillTime": 50,
-            "refillQuantity": 10,
+            "x": 14,
+            "y": 14,
+            "initialQuantity": 20,
+            "refillTime": 100,
+            "refillQuantity": 20,
             "numSticks": 4
         }
     ]

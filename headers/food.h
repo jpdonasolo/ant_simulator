@@ -41,7 +41,7 @@ public:
         currentFood = std::max(0, currentFood-1);
     }
 
-    char getMarker() { return 'F'; }
+    char getMarker();
     std::string getColor(){ return color(4); }
 
     void update();

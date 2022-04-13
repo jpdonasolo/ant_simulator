@@ -2,6 +2,7 @@
 #include <cstdlib>
 #include <iostream>
 #include <cmath>
+#include <mutex>
 
 #include "food.h"
 #include "ant.h"
@@ -150,4 +151,23 @@ std::string color(int idx)
     if(idx==3){ return cyan1; };
     if(idx==4){ return magenta1; };
     return "";
+}
+
+
+void FlowController::reset()
+{
+    max = 0;
+    current = 0;
+}
+
+int FlowController::next()
+{
+    std::lock_guard<std::mutex> lg(m);
+
+    if (current == max)
+    {
+        throw MaxEntitiesReached();
+    }
+
+    return current++;
 }

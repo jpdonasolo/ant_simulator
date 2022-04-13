@@ -36,15 +36,15 @@ void Ant::lookTo(int x, int y)
     {
         weight[0] = 1;
     }
-    if (x > posx)
+    else if (x > posx)
     {
         weight[1] = 1;
     }
-    if (y > posy)
+    else if (y > posy)
     {
         weight[2] = 1;
     }
-    if (x < posx)
+    else if (x < posx)
     {
         weight[3] = 1;
     }
@@ -56,8 +56,8 @@ void Ant::leavePhero()
 {
     Pheromone * phero = new Pheromone(getx(), gety(), getAnthillIndex(), worldP->config["pheroLifetime"].asInt(), worldP);
     Tile * pheroTile = worldP->m_chart[worldP->posToInt(getx(), gety())];
-    pheroTile->pheroList[getAnthillIndex()]++;
-    worldP->m_pheromones.push_back(phero);
+    pheroTile->increasePheroLife(getAnthillIndex());
+    worldP->addPheromone(phero);
 }
 
 
@@ -288,8 +288,8 @@ void Ant::look()
 
     // checa se tá bring, direciona formigueiro
     if(mode == bring)
-    {
-       lookTo(worldP->m_anthills[getAnthillIndex()]->getx(), worldP->m_anthills[getAnthillIndex()]->gety());
+    {   
+        lookTo(worldP->m_anthills[getAnthillIndex()]->getx(), worldP->m_anthills[getAnthillIndex()]->gety());
     } else if(foodInSight || maxPhero > 0)
     {
     // caso contrario, checa por tiles com feromonio de comida aos lados, exceto no seu tile
@@ -302,10 +302,10 @@ void Ant::look()
     {
     // caso nenhuma das condicoes anteriores, ande para frente com maior prob doq os lados
         int weight[4];
-        weight[mapDir(face)] = 10;
-        weight[(mapDir(face)+1)%4] = 2;
-        weight[(mapDir(face)-1)%4] = 2;
+        weight[mapDir(face)] = 1;
+        weight[(mapDir(face)+1)%4] = 1;
         weight[(mapDir(face)+2)%4] = 1;
+        weight[(mapDir(face)+3)%4] = 1;
         face = randDir(weight);
     }
 }
@@ -362,7 +362,7 @@ void Ant::walk()
 
 
 void Ant::update()
-{
+{   
     checkFood();
     checkAnthill();
     if (mode == bring){ leavePhero(); }

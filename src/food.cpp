@@ -6,6 +6,14 @@
 #include "pheromone.h"
 
 
+char Food::getMarker()
+{   
+    char marker;
+    if(currentFood>0){ marker = 'F'; }
+    else{ marker = 'E'; }
+    return marker;
+}
+
 void Food::update()
 {   
     int tileIdx = worldP->getEntityIndex(getx(), gety(), worldP->m_chart);
