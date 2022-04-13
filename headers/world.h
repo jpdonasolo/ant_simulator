@@ -100,7 +100,10 @@ private:
     SDL_Window * window;
     SDL_Renderer * renderer;
     SDL_Texture * antTexture;
+    SDL_Texture * ant2Texture;
     SDL_Texture * foodTexture;
+    SDL_Texture * foodyTexture;
+    SDL_Texture * notFoodTexture;
     SDL_Texture * anthillTexture;
     void setupSDL();
     void draw();

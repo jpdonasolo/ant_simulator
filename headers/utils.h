@@ -20,11 +20,11 @@ Tile * tileFactory(int x, int y, int nAnts);
 double dist(int x1, int y1, int x2, int y2);
 
 
-const std::string red("\033[0;31m");
-const std::string green("\033[1;32m");
-const std::string yellow("\033[1;33m");
-const std::string cyan("\033[0;36m");
-const std::string magenta("\033[0;35m");
-const std::string reset("\033[0m");
+const std::string red1("\033[0;31m");
+const std::string green1("\033[1;32m");
+const std::string yellow1("\033[1;33m");
+const std::string cyan1("\033[0;36m");
+const std::string magenta1("\033[0;35m");
+const std::string reset1("\033[0m");
 const int TOTALCOLORS = 4;
 std::string color(int idx);

@@ -144,10 +144,10 @@ double dist(int x1, int y1, int x2, int y2)
 
 std::string color(int idx)
 {   
-    if(idx==0){ return red; };
-    if(idx==1){ return green; };
-    if(idx==2){ return yellow; };
-    if(idx==3){ return cyan; };
-    if(idx==4){ return magenta; };
+    if(idx==0){ return red1; };
+    if(idx==1){ return green1; };
+    if(idx==2){ return yellow1; };
+    if(idx==3){ return cyan1; };
+    if(idx==4){ return magenta1; };
     return "";
 }

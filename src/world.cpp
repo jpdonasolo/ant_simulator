@@ -20,6 +20,17 @@
 #include "world.h"
 #include "utils.h"
 
+const int black[3] = {0, 0, 0};
+const int blue[3] =  {0, 30, 200};
+const int yellow[3] =  {250, 250, 50};
+const int cyan[3] =  {40, 230, 230};
+const int orange[3] =  {250, 140, 0};
+const int purple[3] =  {200, 0, 240};
+const int green[3] =  {0, 120, 0};
+const int redWine[3] =  {140, 0, 0};
+const int totalColors = 8;
+const int * colors[8] = {black, blue, yellow, cyan, orange, purple, green, redWine};
+    
 
 void World::setup()
 {
@@ -54,6 +65,18 @@ void World::setupSDL()
     foodTexture = SDL_CreateTextureFromSurface(renderer, foodSurface);
     SDL_FreeSurface(foodSurface);
 
+    SDL_Surface * foodySurface = SDL_LoadBMP("foody.bmp");
+    foodyTexture = SDL_CreateTextureFromSurface(renderer, foodySurface);
+    SDL_FreeSurface(foodySurface);
+
+    SDL_Surface * notFoodSurface = SDL_LoadBMP("notFood.bmp");
+    notFoodTexture = SDL_CreateTextureFromSurface(renderer, notFoodSurface);
+    SDL_FreeSurface(notFoodSurface);
+
+    SDL_Surface * anthillSurface = SDL_LoadBMP("anthill.bmp");
+    anthillTexture = SDL_CreateTextureFromSurface(renderer, anthillSurface);
+    SDL_FreeSurface(anthillSurface);
+
     SDL_RenderClear(renderer);
 	SDL_RenderPresent(renderer);
 }
@@ -74,14 +97,14 @@ void World::draw()
             SDL_RenderFillRect(renderer, &rect);
         }
     }
-    for (Anthill * i : m_anthills)
+    /*for (Anthill * i : m_anthills)
     {
         int hx = i->getx();
         int hy = i->gety();
         SDL_SetRenderDrawColor(renderer, 75, 55, 35, 255);
         SDL_Rect rect = {hx * ss, hy * ss, ss, ss};
         SDL_RenderFillRect(renderer, &rect);
-    }
+    }*/
 
     for (Pheromone * i : m_pheromones)
     {
@@ -92,32 +115,40 @@ void World::draw()
         SDL_RenderFillRect(renderer, &rect);
     }
 
-    for (Ant * i : m_ants){
-        int ax = i->getx();
-        int ay = i->gety();
-        SDL_SetTextureColorMod(antTexture, 0, 0, 0);
+    for (Ant * i : m_ants)
+    {
+        const int * c = colors[i->getAnthillIndex() % totalColors];
+        SDL_SetTextureColorMod(antTexture, c[0], c[1], c[2]);
         SDL_SetTextureAlphaMod(antTexture, 100);
-        SDL_Rect rect = {ax * ss, ay * ss, ss, ss};
-        // SDL_RenderFillRect(renderer, &rect);
+        SDL_Rect rect = {i->getx() * ss, i->gety() * ss, ss, ss};
         SDL_RenderCopy(renderer, antTexture, NULL, &rect);
+        if (i->mode == bring)
+        {
+            SDL_RenderCopy(renderer, foodyTexture, NULL, &rect);
+        }
     }
     
     for (Anthill * i : m_anthills)
     {
-        int hx = i->getx();
-        int hy = i->gety();
-        SDL_SetRenderDrawColor(renderer, 75, 55, 35, 255);
-        SDL_Rect rect = {hx * ss, hy * ss, ss, ss};
-        SDL_RenderFillRect(renderer, &rect);
+        const int * c = colors[i->getIndex() % totalColors];
+        SDL_SetTextureColorMod(anthillTexture, c[0], c[1], c[2]);
+        SDL_Rect rect = {i->getx() * ss, i->gety() * ss, ss, ss};
+        SDL_RenderCopy(renderer, anthillTexture, NULL, &rect);
     }
     
     for (Food * i : m_foods)
     {
         int fx = i->getx();
         int fy = i->gety();
-        SDL_Rect rect = {fx * ss, fy * ss, ss, ss};
-        // SDL_RenderFillRect(renderer, &rect);
-        SDL_RenderCopy(renderer, foodTexture, NULL, &rect);
+        int cr = i->currentFood;
+        if (cr == 0)
+        {
+            SDL_Rect rect = {fx * ss, fy * ss, ss, ss};
+            SDL_RenderCopy(renderer, notFoodTexture, NULL, &rect);
+        }else{
+            SDL_Rect rect = {fx * ss, fy * ss, ss, ss};
+            SDL_RenderCopy(renderer, foodTexture, NULL, &rect);
+        }
     }
 
     SDL_RenderPresent(renderer);
@@ -296,9 +327,9 @@ void World::addEntitiesToGrid(ListOrVector entities, std::vector<std::string> & 
     for (auto it : entities)
     {   
         std::string marker = "";
-        marker += it->getColor();
+        // marker += it->getColor();
         marker += it->getMarker();
-        marker += reset;
+        marker += reset1;
         m_grid[(it->getx() + 1) + (getWidth() + 2)*(it->gety()+1)] = marker;
     }
 }
