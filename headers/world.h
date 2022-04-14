@@ -38,11 +38,7 @@ public:
     void update();
 
     /*
-    Fora da classe World, trabalhamos com duas coordenadas, x e 
-    y, por facilidade. Internamente, a classe converte essas duas
-    coordenadas para o índice representativo daquelas coordenadas
-    no vetor World::m_chart, que guarda o mapa.
-    O vetor World::m_grid precisa de uma conversão diferente.
+    Transforma coordenadas cartesianas na posição da array de tiles
     */
     int posToInt(int posx, int posy);
 
