@@ -170,8 +170,12 @@ void Ant::checkAnthill()
     if(antTile->isAnthill == true)
     {
         int anthillIndex = worldP->getEntityIndex(getx(), gety(), worldP->m_anthills);
+        Anthill * anthill = worldP->m_anthills[anthillIndex];
         if(anthillIndex == getAnthillIndex() && mode == bring)
         {
+            anthill->storedFoodCounterMutex.lock();
+            anthill->storedFood++;
+            anthill->storedFoodCounterMutex.unlock();
             mode = seek;
         }
     }

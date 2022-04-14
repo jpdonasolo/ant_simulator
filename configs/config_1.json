@@ -1,5 +1,6 @@
 {
-    "nThreads": 10,
+    "nThreads": 20,
+    "maxIteration": 500000,
     "height": 21,
     "width": 38,
     "squareSize": 50,
@@ -9,7 +10,7 @@
         {
             "x": 0,
             "y": 0,
-            "nAnts": 30
+            "nAnts": 300000
         }
     ],
     "foods": [
@@ -17,8 +18,8 @@
             "x": 30,
             "y": 16,
             "initialQuantity": 200,
-            "refillTime": 100,
-            "refillQuantity": 40,
+            "refillTime": 2,
+            "refillQuantity": 10000,
             "numSticks": 5
         }
     ]
