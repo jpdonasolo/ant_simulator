@@ -45,7 +45,6 @@ void World::setup(int jsonIdx)
     config = readJson(jsonIdx);
 
     setupSDL();
-    setupGrid();
 
     setupChart();
     addAntsAndHills();
@@ -223,6 +222,9 @@ void World::draw()
     SDL_RenderPresent(renderer);
 }
 
+/*
+ * Lê a configuração do json e transforma em uma estrutura de dados útil.
+ */
 Json::Value World::readJson(int jsonIdx)
 {
     std::string configPath = "./configs/config_"
@@ -262,42 +264,10 @@ void World::setupChart()
     }
 }
 
+
 /*
- * 
+ * Adiciona formigas e formigueiros ao mapa.
  */
-void World::setupGrid()
-{   
-    const int heightPlusWalls = getHeight() + 2;
-    const int widthPlusWalls = getWidth() + 2;
-
-    for(int cury = 0; cury < heightPlusWalls; cury++)
-    {
-        for(int curx = 0; curx < widthPlusWalls; curx++)
-        {
-            if ((curx == 0 && cury == 0) || (curx == widthPlusWalls - 1 && cury == heightPlusWalls - 1))
-            {
-                m_grid_base.push_back('/');
-            }
-            else if ((curx == widthPlusWalls - 1 && cury == 0) || (curx == 0 && cury == heightPlusWalls - 1))
-            {
-                m_grid_base.push_back('\\');
-            }
-            else if ((curx > widthPlusWalls - 2) || (curx < 1))
-            {
-                m_grid_base.push_back('|');
-            }
-            else if ((cury < 1) || (cury > heightPlusWalls - 2))
-            {
-                m_grid_base.push_back('-');
-            }
-            else
-            {
-                m_grid_base.push_back(' ');
-            }
-        }
-    }
-}
-
 void World::addAntsAndHills()
 {
     Json::Value anthillsInfo = config["anthills"];
@@ -322,6 +292,9 @@ void World::addAntsAndHills()
     }
 }
 
+/*
+ * Adiciona comidas ao mapa.
+ */
 void World::addFoods()
 {
     Json::Value foodsInfo = config["foods"];
@@ -340,12 +313,18 @@ void World::addFoods()
     }
 }
 
+/*
+ * Converte uma coordenada no mapa para o índice daquele tile no array
+ * que representa o mapa.
+ */
 int World::posToInt(int posx, int posy)
 {
     return posx + getWidth() * posy;
 }
 
-
+/*
+ * Faz o print das informações sobre a simulação no terminal.
+ */
 void World::print()
 {
     // Esse caractere é traduzido para o comando de clear screen
@@ -371,19 +350,9 @@ void World::print()
     std::cout << std::endl;
 }
 
-template <class ListOrVector>
-void World::addEntitiesToGrid(ListOrVector entities, std::vector<std::string> & m_grid)
-{   
-    for (auto it : entities)
-    {   
-        std::string marker = "";
-        // marker += it->getColor();
-        marker += it->getMarker();
-        marker += reset1;
-        m_grid[(it->getx() + 1) + (getWidth() + 2)*(it->gety()+1)] = marker;
-    }
-}
-
+/*
+ * Executa o loop principal de update, descrito no relatório.
+ */
 void World::update()
 {   
     updateWithThreads(m_pheromones);
@@ -408,16 +377,19 @@ void World::update()
     return;
 }
 
+/*
+ * Adiciona feromônio ao mapa
+ */
+void World::addPheromone(Pheromone * phero)
+{
+    std::lock_guard<std::mutex> lg(mutex_phero);
+    m_pheromones.push_back(phero);
+}
+
 World::~World()
 {
     SDL_DestroyRenderer(renderer);
 	SDL_DestroyWindow(window);
 	SDL_Quit();
     return;
-}
-
-void World::addPheromone(Pheromone * phero)
-{
-    std::lock_guard<std::mutex> lg(mutex_phero);
-    m_pheromones.push_back(phero);
 }

@@ -105,14 +105,6 @@ private:
     void addFoods();
 
     /*
-    Funções para exibição do mapa
-    */
-    void setupGrid();
-    
-    template <class ListOrVector>
-    void addEntitiesToGrid(ListOrVector entities, std::vector<std::string> & m_grid);
-
-    /*
     Funções de update
     */
     template <class EntityType>
@@ -125,6 +117,12 @@ private:
     */
    std::mutex mutex_phero;
 };
+
+/*
+ * Essas duas próximas funções fazem o update de todas instâncias de um
+ * determinado tipo de entidade (feromônio, formiga ou comida) utilizando
+ * um determinado número de threads.
+ */
 
 template <class EntityType>
 void World::updateEntities(FlowController & fc, std::vector<EntityType> & entities)
@@ -170,6 +168,10 @@ void World::updateWithThreads(std::vector<EntityType> & entities)
     }
 }
 
+/*
+ * Dadas coordenadas e uma estrutura de dados contendo entidades,
+ * retorna a entidade que está nessas coordenadas do mapa.
+ */
 template <class EntityGrid>
 int World::getEntityIndex(int posx, int posy, EntityGrid entities){
     int index = -1;
