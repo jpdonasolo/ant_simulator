@@ -1,5 +1,5 @@
 {
-    "nThreads": 10,
+    "nThreads": 20,
     "height": 21,
     "width": 38,
     "squareSize": 50,
@@ -8,17 +8,22 @@
     "anthills": [
         {
             "x": 0,
-            "y": 0,
+            "y": 11,
             "nAnts": 30
+        },
+        {
+            "x": 37,
+            "y": 11,
+            "nAnts": 31
         }
     ],
     "foods": [
         {
-            "x": 30,
-            "y": 16,
-            "initialQuantity": 200,
+            "x": 19,
+            "y": 0,
+            "initialQuantity": 100,
             "refillTime": 100,
-            "refillQuantity": 40,
+            "refillQuantity": 50,
             "numSticks": 5
         }
     ]
