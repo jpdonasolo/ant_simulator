@@ -5,15 +5,14 @@ int main(int argc, char const *argv[])
     World world;
     world.setup();
     
-    bool running = true;
     bool pause = false;
 	SDL_Event event;
 
-    while(running)
+    while(world.running)
     {
         while(SDL_PollEvent(&event)){
             if(event.type == SDL_QUIT)
-				running = false;
+				world.running = false;
 
             if(event.type == SDL_MOUSEBUTTONUP)
             {

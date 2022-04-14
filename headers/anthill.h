@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <mutex>
 
 #include "entity.h"
 #include "utils.h"
@@ -19,6 +20,8 @@ public:
     int getPopu() const { return popu; };
 
     char getMarker() { return 'H'; }
+    int storedFood = 0;
+    std::mutex storedFoodCounterMutex;
 
 private:
     const int ind;

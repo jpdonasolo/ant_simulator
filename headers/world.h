@@ -32,6 +32,7 @@ public:
     World(){};
     ~World();
 
+    void oldPrint();
     void print();
     void setup();
     void update();
@@ -55,6 +56,12 @@ public:
     std::vector<Pheromone*> m_pheromones;
 
     /*
+    Atributos da simulação
+    */
+    bool running = true;
+    int curIteration = 0;
+
+    /*
     Metadados da simulação - LIDOS DO JSON
     */
     Json::Value config;
@@ -65,6 +72,7 @@ public:
     template <class EntityGrid>
     int getEntityIndex(int posx, int posy, EntityGrid entities);
 
+    int getMaxIteration() { return config["maxIteration"].asInt(); }
     int getHeight() { return config["height"].asInt(); }
     int getWidth() { return config["width"].asInt(); }
     int getSquareSize() { return config["squareSize"].asInt(); }

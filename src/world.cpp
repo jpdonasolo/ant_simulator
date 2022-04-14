@@ -30,6 +30,7 @@ const int green[3] =  {0, 120, 0};
 const int redWine[3] =  {140, 0, 0};
 const int totalColors = 8;
 const int * colors[8] = {black, blue, yellow, cyan, orange, purple, green, redWine};
+std::vector<std::string> nameColors = {"black", "blue", "yellow", "cyan", "orange", "purple", "green", "redWine"};
     
 
 
@@ -50,7 +51,8 @@ void World::setupSDL()
     SDL_Init(SDL_INIT_VIDEO);
     int w = getWidth() * getSquareSize();
     int h = getHeight() * getSquareSize();
-    window = SDL_CreateWindow("FormiguinhaZ",SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED,w,h,0);
+    std::string title = "FormiguinhaZ - " + std::to_string(getMaxIteration()) + " Iterations";
+    window = SDL_CreateWindow(title.c_str(),SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED,w,h,0);
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_PRESENTVSYNC);
     SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
 
@@ -188,6 +190,9 @@ void World::draw()
         SDL_SetTextureColorMod(anthillTexture, c[0], c[1], c[2]);
         SDL_Rect rect = {i->getx() * ss, i->gety() * ss, ss, ss};
         SDL_RenderCopy(renderer, anthillTexture, NULL, &rect);
+        /*SDL_SetRenderDrawColor(renderer, 255, 255, 255, 30);
+        SDL_Rect rect = {i->getx() * ss, i->gety() * ss, ss, ss};
+        SDL_RenderFillRect(renderer, &rect);*/
     }
     
     for (Food * i : m_foods)
@@ -319,7 +324,7 @@ int World::posToInt(int posx, int posy)
     return posx + getWidth() * posy;
 }
 
-void World::print()
+void World::oldPrint()
 {   
     // Esse caractere é traduzido para o comando de clear screen
     // do sistema operacional
@@ -353,6 +358,23 @@ void World::print()
     std::cout << std::endl;
 }
 
+void World::print()
+{
+    std::cout << "Iteration: " << curIteration << std::endl;
+    for (Anthill * i : m_anthills)
+    {
+        std::string name = nameColors[i->getIndex() % totalColors];
+        std::cout << "Anthill " << name << ": " << std::endl;
+        std::cout << "Ants: " << i->getPopu() << std::endl;
+        std::cout << "Foods: " << i->storedFood << std::endl;
+    }
+    for (Food * i : m_foods)
+    {
+        std::cout << "SourceFood(" << i->getx() << "," << i->gety() << "): " << i->currentFood << std::endl;
+    }
+    std::cout << std::endl;
+}
+
 template <class ListOrVector>
 void World::addEntitiesToGrid(ListOrVector entities, std::vector<std::string> & m_grid)
 {   
@@ -370,16 +392,23 @@ void World::update()
 {   
     updateWithThreads(m_pheromones);
 
-    std::vector<Pheromone*> newPhero;
-    for (auto phero : m_pheromones)
+    std::vector<Pheromone *> newPhero;
+    for (Pheromone * phero : m_pheromones)
     {
         if (!(phero->toRemove)){ newPhero.push_back(phero); }
+        else {delete phero;}
     }
     m_pheromones = newPhero;
 
     updateWithThreads(m_ants);
     updateWithThreads(m_foods);
 
+    print();
+    curIteration++;
+    if(curIteration > getMaxIteration())
+    {
+        running = false;
+    }
     return;
 }
 
