@@ -33,7 +33,7 @@ public:
     ~World();
 
     void print();
-    void setup();
+    void setup(int jsonIdx);
     void update();
 
     /*
@@ -94,7 +94,7 @@ private:
     /*
     Leitura dos dados necessários à execução do programa
     */
-    Json::Value readJson();
+    Json::Value readJson(int jsonIdx);
 
     /*
     Funções para inicialização do mapa

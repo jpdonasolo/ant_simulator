@@ -1,9 +1,13 @@
 #include "world.h"
+#include <iostream>
 
-int main(int argc, char const *argv[])
+int main(int argc, char *argv[])
 {
+    int jsonIdx = std::stoi(argv[argc-1]);
+    std::cout << jsonIdx << std::endl;
+
     World world;
-    world.setup();
+    world.setup(jsonIdx);
     
     bool running = true;
     bool pause = false;
