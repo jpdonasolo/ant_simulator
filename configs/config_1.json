@@ -1,0 +1,26 @@
+{
+    "nThreads": 20,
+    "maxIteration": 500000,
+    "height": 21,
+    "width": 38,
+    "squareSize": 50,
+    "vision": 5,
+    "pheroLifetime": 50,
+    "anthills": [
+        {
+            "x": 0,
+            "y": 0,
+            "nAnts": 300000
+        }
+    ],
+    "foods": [
+        {
+            "x": 30,
+            "y": 16,
+            "initialQuantity": 200,
+            "refillTime": 2,
+            "refillQuantity": 10000,
+            "numSticks": 5
+        }
+    ]
+}

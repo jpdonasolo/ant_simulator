@@ -34,9 +34,9 @@ std::vector<std::string> nameColors = {"black", "blue", "yellow", "cyan", "orang
     
 
 
-void World::setup()
+void World::setup(int jsonIdx)
 {
-    config = readJson();
+    config = readJson(jsonIdx);
 
     setupSDL();
     setupGrid();
@@ -211,9 +211,12 @@ void World::draw()
     SDL_RenderPresent(renderer);
 }
 
-Json::Value World::readJson()
+Json::Value World::readJson(int jsonIdx)
 {
-    std::ifstream configFile (CONFIGURATION_PATH);
+    std::string configPath = "./configs/config_"
+                             + std::to_string(jsonIdx)
+                             + ".json";
+    std::ifstream configFile (configPath);
     
     Json::Reader reader;
     Json::Value configData;
