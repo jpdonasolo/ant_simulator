@@ -1,5 +1,4 @@
 # Formiguinhaz
 
-Bem vindo ao FormiguinhaZ<sup>TM</sup>! Um simulador de formigas
+Bem vindo ao *FormiguinhaZ<sup>TM</sup>*, um simulador de formigas
 altamente paralelizado!
- Produtor consumidor na comida (?)
