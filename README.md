@@ -54,8 +54,8 @@ execute `main` com `n` como argumento.
 
 #### Parâmetros Globais
 
-* `nThreads`: Número de threads que devem ser utilizadas para rodar a
-  simulação. Inteiro maior que 0.
+* `nThreads`: Número de threads, além da principal que devem ser utilizadas
+   para rodar a simulação. Inteiro maior que 0.
 * `squareSize`: Largura de cada *Tile*, em pixels. Inteiro maior que 0.
 * `height`: Altura do mapa, em *Tiles*. Inteiro maior que 0.
 * `width`: Largura do mapa, em *Tiles*. Inteiro maior que 0.
@@ -71,7 +71,7 @@ com resolução Full HD, ou seja, `1920 X 1080`.
 * `vision`: Campo de visão de cada formiga. Cada formiga consegue ver um
   retângulo de largura `2*vision` e altura `vision` à sua frente. Inteiro
 maior que 0.
-* `pheroLifetime`: Vida de um único feromônio, medida em `ticks`, ou
+* `pheroLifetime`: Vida de um único feromônio, medida em iterações.
   `timesteps`. Inteiro maior que 0.
 
 #### Parâmetros para Formigueiros (`anthills`)
@@ -92,7 +92,7 @@ maior que 0.
 * `initialQuantity`: Quantidade inicial de comida disponível. Inteiro
   maior que 0.
 * `refillTime`: Tempo entre cada reabastecimento da comida, medido em
-  `ticks` ou `timesteps`. Inteiro maior que 0.
+  iterações. Inteiro maior que 0.
 * `refillQuantity`: Quantidade de comida que deve ser reposta a cada
   reabastecimento. Inteiro maior que 0.
 * `numSticks`: Número de bastões disponíveis na fonte de comida para as
