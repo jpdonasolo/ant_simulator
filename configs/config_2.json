@@ -1,6 +1,6 @@
 {
     "nThreads": 20,
-    "maxIteration": 1000,
+    "maxIteration": 10000,
     "height": 21,
     "width": 38,
     "squareSize": 50,

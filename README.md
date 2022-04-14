@@ -41,6 +41,11 @@ devo rodar o comando
 ./main 1
 ```
 
+Com isso, será aberta uma janela gráfica onde a simulação será exibida.
+No terminal, aparecerá um log com as principais estatísticas referentes à
+simulação, como o número de formigas de cada colônia e a quantidade de
+comida disponível em cada fonte.
+
 ## Customização
 
 Caso deseje rodar a simulação com um outro conjunto de configurações,

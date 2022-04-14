@@ -1,12 +1,12 @@
 {
     "nThreads": 40,
-    "maxIteration": 100,
+    "maxIteration": 10000,
     "height": 21,
     "width": 38,
     "squareSize": 50,
     "vision": 5,
     "pheroLifetime": 20,
-    "tickDuration": 300,
+    "tickDuration": 100,
     "anthills": [
         {
             "x": 0,

@@ -363,14 +363,22 @@ void World::oldPrint()
 
 void World::print()
 {
+    // Esse caractere é traduzido para o comando de clear screen
+    // do sistema operacional
+    // https://stackoverflow.com/questions/17335816/clear-screen-using-c
+    // Testado em Windows e Linux
+    std::cout << "\033[2J\033[1;1H";
+
     std::cout << "Iteration: " << curIteration << std::endl;
     for (Anthill * i : m_anthills)
     {
         std::string name = nameColors[i->getIndex() % totalColors];
+        std::cout << std::endl;
         std::cout << "Anthill " << name << ": " << std::endl;
         std::cout << "Ants: " << i->getPopu() << std::endl;
         std::cout << "Foods: " << i->storedFood << std::endl;
     }
+    std::cout << std::endl;
     for (Food * i : m_foods)
     {
         std::cout << "SourceFood(" << i->getx() << "," << i->gety() << "): " << i->currentFood << std::endl;
