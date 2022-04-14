@@ -21,8 +21,6 @@
 #include "utils.h"
 
 
-#define CONFIGURATION_PATH "config.json"
-
 /*
 A classe World é o contêiner de tudo o que acontece na simulação.
 */

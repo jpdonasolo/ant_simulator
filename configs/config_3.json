@@ -6,6 +6,7 @@
     "squareSize": 50,
     "vision": 5,
     "pheroLifetime": 20,
+    "tickDuration": 300,
     "anthills": [
         {
             "x": 0,

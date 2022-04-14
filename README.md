@@ -56,6 +56,8 @@ execute `main` com `n` como argumento.
 
 * `nThreads`: Número de threads, além da principal que devem ser utilizadas
    para rodar a simulação. Inteiro maior que 0.
+* `maxIteration`: Número de iterações que a simulação deve rodar antes de
+  fechar. Inteiro maior que 0.
 * `squareSize`: Largura de cada *Tile*, em pixels. Inteiro maior que 0.
 * `height`: Altura do mapa, em *Tiles*. Inteiro maior que 0.
 * `width`: Largura do mapa, em *Tiles*. Inteiro maior que 0.
@@ -72,7 +74,9 @@ com resolução Full HD, ou seja, `1920 X 1080`.
   retângulo de largura `2*vision` e altura `vision` à sua frente. Inteiro
 maior que 0.
 * `pheroLifetime`: Vida de um único feromônio, medida em iterações.
-  `timesteps`. Inteiro maior que 0.
+  Inteiro maior que 0.
+* `tickDuration`: Tempo de espera entre iterações, em milisegundos.
+  Inteiro maior que 0.
 
 #### Parâmetros para Formigueiros (`anthills`)
 

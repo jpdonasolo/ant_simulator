@@ -8,6 +8,8 @@ int main(int argc, char *argv[])
 
     World world;
     world.setup(jsonIdx);
+
+    int tickDuration = world.config["tickDuration"].asInt();
     
     bool pause = false;
 	SDL_Event event;
@@ -27,7 +29,7 @@ int main(int argc, char *argv[])
             world.update();
             world.draw();
         }
-        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        std::this_thread::sleep_for(std::chrono::milliseconds(tickDuration));
     }
     return 0;
 }
