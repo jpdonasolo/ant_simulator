@@ -20,6 +20,9 @@
 #include "world.h"
 #include "utils.h"
 
+/*
+ * Código de cores RGB para printar.
+ */
 const int black[3] = {0, 0, 0};
 const int blue[3] =  {0, 30, 200};
 const int yellow[3] =  {250, 250, 50};
@@ -34,6 +37,9 @@ std::vector<std::string> nameColors = {"black", "blue", "yellow", "cyan", "orang
     
 
 
+/*
+ * Inicializa World com elementos principais da simulação.
+ */
 void World::setup(int jsonIdx)
 {
     config = readJson(jsonIdx);
@@ -46,6 +52,9 @@ void World::setup(int jsonIdx)
     addFoods();
 }
 
+/*
+ * Setup dos elemntos necessários para construir a interface gráfica.
+ */
 void World::setupSDL()
 {
     SDL_Init(SDL_INIT_VIDEO);
@@ -85,6 +94,9 @@ void World::setupSDL()
 	SDL_RenderPresent(renderer);
 }
 
+/*
+ * Desenha o mapa e seus elementos.
+ */
 void World::draw()
 {
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
@@ -230,6 +242,9 @@ Json::Value World::readJson(int jsonIdx)
     
 }
 
+/*
+ * Cria a estrutura de dados do mapa, com os tiles.
+ */
 void World::setupChart()
 {   
     const int height = getHeight();
@@ -247,6 +262,9 @@ void World::setupChart()
     }
 }
 
+/*
+ * 
+ */
 void World::setupGrid()
 {   
     const int heightPlusWalls = getHeight() + 2;
@@ -327,39 +345,6 @@ int World::posToInt(int posx, int posy)
     return posx + getWidth() * posy;
 }
 
-void World::oldPrint()
-{   
-    // Esse caractere é traduzido para o comando de clear screen
-    // do sistema operacional
-    // https://stackoverflow.com/questions/17335816/clear-screen-using-c
-    // Testado em Windows e Linux
-    std::cout << "\033[2J\033[1;1H";
-
-    const int widthPlusWalls = getWidth() + 2;
-    const int heightPlusWalls = getHeight() + 2;
-
-    std::vector<std::string> m_grid(widthPlusWalls*heightPlusWalls,""); 
-    for(int i = 0; i < heightPlusWalls; ++i){
-        for(int j = 0; j < widthPlusWalls; ++j){
-            m_grid[(i*widthPlusWalls)+j] += m_grid_base[(i*widthPlusWalls)+j];
-        };
-    };
-
-    addEntitiesToGrid(m_pheromones, m_grid);
-    addEntitiesToGrid(m_ants, m_grid);
-    addEntitiesToGrid(m_foods, m_grid);
-    addEntitiesToGrid(m_anthills, m_grid);
-
-    for(int i = 0; i < heightPlusWalls; ++i){
-        for(int j = 0; j < widthPlusWalls; ++j){
-            std::cout << m_grid[i*(widthPlusWalls) + j];
-            if(j==widthPlusWalls-1){
-                std::cout << std::endl;
-            }
-        }
-    }
-    std::cout << std::endl;
-}
 
 void World::print()
 {

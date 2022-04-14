@@ -30,7 +30,6 @@ public:
     World(){};
     ~World();
 
-    void oldPrint();
     void print();
     void setup(int jsonIdx);
     void update();
