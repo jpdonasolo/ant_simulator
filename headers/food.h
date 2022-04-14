@@ -29,7 +29,6 @@ public:
         {
             sticks = new std::mutex[numSticks];
             seats = new std::mutex[numSticks];
-            s = new std::mutex[numSticks];
             state = new int[numSticks];
         }
 
@@ -58,13 +57,13 @@ public:
     // each ant gets a seat at the table
     std::mutex * seats; // array
 
-    // ants use two sticks to eat, but they must aquire each
-    // one of them individually
-    std::mutex * sticks; // array
 
     // variables for philosophers dinner solution
+
+    // ants use two sticks to eat, but they must aquire each
+    // one of them individually
+    std::mutex * sticks;
     int * state;
-    std::mutex * s;
     std::mutex m;
 
 private:

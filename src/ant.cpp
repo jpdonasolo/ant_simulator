@@ -131,7 +131,7 @@ void Ant::takeForks(int i, Food * food)
     food->state[i] = HUNGRY;
     test(i, food);
     food->m.unlock();
-    food->s[i].lock();
+    food->sticks[i].lock();
 }
 
 void Ant::putForks(int i, Food * food)
@@ -152,7 +152,7 @@ void Ant::test(int i, Food * food)
      && food->state[right(i, N)] != EATING)
     {
         food->state[i] = EATING;
-        food->s[i].unlock();
+        food->sticks[i].unlock();
     }
 }
 
